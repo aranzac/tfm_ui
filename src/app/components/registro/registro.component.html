@@ -1,0 +1,49 @@
+  <div class="center">
+    <div class="card " style="width: 20rem;">
+    
+        <div class="card-body">
+            <form class="needs-validation" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)" novalidate>
+              
+                <div class="form-group">
+                  <label for="name">Nombre de usuario</label>
+                  <input type="text" class="form-control" id="name" aria-describedby="name" formControlName="name"  [ngClass]="{ 'is-invalid': submitted && myForm.controls.name.errors }">
+                  <div *ngIf="submitted && myForm.controls.name.errors" class="invalid-feedback">
+                    <div  class="form-text" *ngIf="myForm.controls.name.errors.required">Debes introducir un nombre de usuario</div>
+                    <div  class="form-text" *ngIf="myForm.controls.name.errors.minlength">El nombre debe tener al menos 3 carácteres</div>
+
+                </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="email" formControlName="email"  [ngClass]="{ 'is-invalid': submitted && myForm.controls.email.errors }">
+                    <div *ngIf="submitted && myForm.controls.email.errors" class="invalid-feedback">
+                        <div  class="form-text" *ngIf="myForm.controls.email.errors.required">Debes introducir un email</div>
+                        <div  class="form-text" *ngIf="myForm.controls.email.errors.pattern">Debes introducir un email válido</div>
+                    </div>
+                  </div>
+                <div class="form-group">
+                  <label for="password">Contraseña</label>
+                  <input type="password" class="form-control" id="password" formControlName="password"  [ngClass]="{ 'is-invalid': submitted && myForm.controls.password.errors }">
+                  <div *ngIf="submitted && myForm.controls.password.errors" class="invalid-feedback">
+                    <div  class="form-text" *ngIf="myForm.controls.password.errors.required">Debes introducir una contraseña</div>
+                    <div  class="form-text" *ngIf="myForm.controls.password.errors.minlength">La contraseña debe tener al menos 6 carácteres</div>
+                </div>
+                </div>
+        
+                <div class="text-center">
+                <div class="form-group form-check">
+                  <input type="checkbox" class="form-check-input" id="exampleCheck1" formControlName="check">
+                  <label class="form-check-label" for="exampleCheck1">Recuérdame</label>
+                </div>
+                <div *ngIf="existing" class="alert alert-danger" role="alert">
+                    El usuario o email ya existen.
+                  </div>                <button type="submit" class="btn btn-primary" >Enviar</button>
+            </div>
+              </form>
+        </div>
+    
+      </div>
+    </div>
+
+
+
