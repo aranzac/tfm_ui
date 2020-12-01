@@ -7,6 +7,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavigationExtras, Router } from '@angular/router';
+import { RoleService } from 'src/app/services/role.service';
+import { Role } from 'src/app/models/role';
 
 
 const httpOptions = {
@@ -28,19 +30,18 @@ export class RegistroComponent implements OnInit {
     username: '',
     email: '',
     password: '',
-    state: 'enabled',
+    enabled: true,
     roles: []
   };
   submitted = false;
+  roleUser: Role[]
 
   
 
-  constructor(private http: HttpClient, private fb: FormBuilder, private router: Router) { 
-
- 
-  }
+  constructor(private http: HttpClient, private fb: FormBuilder, private router: Router, private roleService: RoleService) {}
 
   ngOnInit(): void {
+
     this.myForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', Validators.compose([
@@ -49,34 +50,34 @@ export class RegistroComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       check: ['']
       });
+
+      this.roleService.getRoleByName("ROLE_USER").subscribe((data)=>{
+        this.roleUser = [data]
+      })
+      
   }
 
   onSubmit(myForm) {
+    //console.log(this.roleUser)
     this.existing = false;
     this.submitted = true;
-     console.log('Valid?', myForm.valid); // true or false
-     console.log('Name', myForm.value.name);
-     console.log('Email', myForm.value.email);
-     console.log('password', myForm.value.password);
      if(!myForm.value.check)
      myForm.value.check = false;
-     console.log('check', myForm.value.check);
+     //console.log('check', myForm.value.check);
 
-
-    // if (myForm.invalid) 
-    //   return;
       if (myForm.valid) {
        
         this.user.username = myForm.value.name
         this.user.email = myForm.value.email
         this.user.password = myForm.value.password
-         this.user.state = "enabled";
-        this.user.roles = [];
+         this.user.enabled = true;
+        //this.user.roles = this.roleUser;
   
+      
+
         console.log(this.user)
-
-
-        this.http.post(USER_SERVICE, JSON.stringify(this.user), httpOptions).subscribe(
+        
+        this.http.post(USER_SERVICE + '/', JSON.stringify(this.user), httpOptions).subscribe(
           (data) => {
             console.log(data);
             this.user = new User();
@@ -88,8 +89,6 @@ export class RegistroComponent implements OnInit {
             console.log(error);
           }
         );
-
-
       }  
   }
 }

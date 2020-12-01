@@ -1,0 +1,21 @@
+ function downloadSvg(){
+          var BB = getBlob();
+
+          var html = d3.select(source)
+            .attr("version", 1.1)
+            .attr("xmlns", "http://www.w3.org/2000/svg")
+						.node().parentNode.innerHTML;
+
+          //html = he.encode(html);
+
+          var isSafari = (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1);
+
+          if (isSafari) {
+            var img = "data:image/svg+xml;utf8," + html;
+            var newWindow = window.open(img, 'download');
+          } else {
+            var blob = new BB([html], { type: "data:image/svg+xml" });
+            saveAs(blob, (element.find('input').val() || element.find('input').attr("placeholder")) + ".svg")
+          }
+
+        }

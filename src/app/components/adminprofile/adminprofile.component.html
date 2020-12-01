@@ -1,0 +1,167 @@
+<div *ngIf="isLoggedIn && isAdmin; else loggedOut" class="d-flex justify-content-center mt-4">
+  <div style="width: 80%;">
+    <div class="card ">
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs pull-right" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+              aria-selected="true">Gráficas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+              aria-selected="false">Cuentas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+              aria-selected="false">Roles</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body">
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+            <div class="card mt-3" style="width: 100%">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">usuario email</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+              </ul>
+            </div>
+
+          </div>
+          <div class="tab-pane fade cen" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <form class="form-inline my-4 my-lg-0 mt-1" [formGroup]="myForm" (ngSubmit)="search(myForm)" novalidate>
+              <input class="form-control mr-sm-2" type="search" formControlName="attribute" placeholder="Buscar"
+                aria-label="Search" required>
+              <button [disabled]="!accounts || !myForm.valid" class="btn btn-outline-success my-4 my-sm-2"
+                type="submit">Buscar</button>
+              <!-- <a *ngIf="dataModify" class="nav-link font-weight-bold close" title="Volver atrás" 
+                (click)="backToAllResults()">X</a> -->
+              <button *ngIf="dataModify" type="button" class="btn btn-outline-info ml-4"
+                (click)="backToAllResults()">Todos los resultados</button>
+
+            </form>
+            <div> </div>
+
+            <div *ngIf="noResults" class="alert alert-warning mt-3" role="alert">
+              No hay resultados para esta búsqueda
+            </div>
+            <div *ngIf="accounts; else noData" class="d-flex justify-content-center text-center mt-4">
+              <table class="table table-bordered table-sm table-responsive">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 2%">Id</th>
+                    <th scope="col" style="width: 10%">Usuario</th>
+                    <th scope="col" style="width: 10%">Email</th>
+                    <th scope="col" style="width: 10%">Roles</th>
+                    <th scope="col" style="width: 6%">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let account of accounts">
+                    <th scope="row">{{account.id}}</th>
+                    <td>{{account.username}}</td>
+                    <td>{{account.email}}</td>
+                    <td>
+
+                      <div *ngFor="let role of account.roles">
+                        <div *ngIf="role.name=='ROLE_USER'">Usuario</div>
+                        <div *ngIf="role.name=='ROLE_ADMIN'">Administrador</div>
+                      </div>
+
+
+                    </td>
+                    <td class="text-capitalize">
+                      <div *ngIf="account.state;else danger">
+                        <span class="badge badge-success">Habilitado</span>
+                      </div>
+                      <ng-template #danger>
+                        <span class="badge badge-danger">Deshabilitado</span>
+                      </ng-template>
+                    </td>
+                    <td class="b-inline" style="width: 10%;">
+                      <button *ngIf="account.enabled" type="button" (click)="updateAccount(account)"
+                        class="btn btn-success btn-sm">Deshabilitar</button>
+
+                      <button *ngIf="!account.enabled" type="button" (click)="updateAccount(account)"
+                        class="btn btn-success btn-sm">Habilitar</button>
+                      &nbsp;
+                      <button type="button" (click)="deleteAccount(account)"
+                        class="btn btn-danger btn-sm">Borrar</button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+            <ng-template #noData>
+              <p class="text-center text-secondary">No hay datos</p>
+            </ng-template>
+
+          </div>
+          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+            <form class="form-inline my-4 my-lg-0 mt-1" [formGroup]="myForm2" (ngSubmit)="searchRoles(myForm2)"
+              novalidate>
+              <input class="form-control mr-sm-2" type="search" formControlName="atributo" placeholder="Buscar"
+                aria-label="Search" required>
+              <button [disabled]="!roles || !myForm2.valid" class="btn btn-outline-success my-4 my-sm-2"
+                type="submit">Buscar</button>
+              <button *ngIf="dataModifyRole" type="button" class="btn btn-outline-info ml-4"
+                (click)="backToAllResultsRoles()">Todos los resultados</button>
+            </form>
+
+            <div *ngIf="noResultsRole" class="alert alert-warning mt-3" role="alert">
+              No hay resultados para esta búsqueda
+            </div>
+            <div class="alert alert-primary mt-2" role="alert">
+              La búsqueda debe realizarse según el campo de valor del rol.
+            </div>
+            <div *ngIf="roles; else noData" class="d-flex justify-content-center text-center mt-4">  
+              <table class="table table-bordered table-sm table-responsive">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 2%">Id</th>
+                    <th scope="col" style="width: 10%">Nombre</th>
+                    <th scope="col" style="width: 10%">Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let role of roles">
+                    <th scope="row">{{role.id}}</th>
+                    <td>
+                      <div *ngIf="role.name=='ROLE_USER'">Usuario</div>
+                      <div *ngIf="role.name=='ROLE_ADMIN'">Administrador</div>
+                    </td>
+                    <td>{{role.name}}</td>
+
+
+                    <td class="b-inline" style="width: 10%;">
+
+                      <button type="button" (click)="deleteAccount(account)"
+                        class="btn btn-danger btn-sm">Borrar</button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<ng-template #loggedOut>
+  <div class="jumbotron jumbotron-fluid text-center">
+    <div class="container">
+      <h1 class="display-4">Acceso restringido</h1>
+      <p class="lead">No tienes permiso para acceder a esta página</p>
+      <p class="lead">Volver a <a href="/">Inicio</a></p>
+    </div>
+  </div>
+</ng-template>

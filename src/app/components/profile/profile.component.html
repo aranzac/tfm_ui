@@ -1,0 +1,41 @@
+
+
+<div *ngIf="isLoggedIn; else loggedOut">
+  <div *ngIf="allowed; else noAllowed">
+    <h1>Perfil de {{username}}</h1>
+    <ul *ngIf="user" class="list-group">
+      <li class="list-group-item">Nombre de usuario: {{user.username}}</li>
+      <li class="list-group-item">Email: {{user.email}}</li>
+      <li class="list-group-item">Estado: <p class="list-inline-item" *ngIf="user.enabled; else disabled"></p>Habilitado</li>
+      <li class="list-group-item">Roles: 
+        <p class="list-inline-item" *ngFor="let role of user.roles">
+          {{role.name}}
+        </p>
+      </li>
+
+    </ul>
+  </div>
+</div>
+
+<ng-template  #disabled> 
+  <p>Deshabilitado</p>
+</ng-template>
+
+<ng-template  #loggedOut> 
+    <div class="jumbotron jumbotron-fluid  text-center">
+        <div class="container">
+          <h1 class="display-4">Acceso restringido</h1>
+          <p class="lead">Debes iniciar sesión para pode acceder a esta dirección.</p>
+        </div>
+      </div>
+</ng-template>
+
+<ng-template  #noAllowed> 
+  <div class="jumbotron jumbotron-fluid  text-center">
+      <div class="container">
+        <h1 class="display-4">Acceso restringido</h1>
+        <p class="lead">No puedes acceder a esta dirección</p>
+        <p class="lead" >Volver a <a href="/">Inicio</a></p>
+      </div>
+    </div>
+</ng-template>

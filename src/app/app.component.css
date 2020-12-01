@@ -1,0 +1,27 @@
+ /* div:active {
+    background-color: transparent;
+    text-decoration: underline;
+    color: transparent;
+} */
+
+.dropdown-item.active{
+    background-color: lightgrey;
+    text-decoration: bold;
+}
+/*
+.dropdown-item.active:hover{
+    text-decoration: bold;
+}
+
+a:active {
+    background-color: transparent;
+  }
+
+a::after{
+    background-color: transparent;
+}
+
+a:hover {
+    text-decoration: none;
+
+  } */

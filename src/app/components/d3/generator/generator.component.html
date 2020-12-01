@@ -1,0 +1,236 @@
+<!-- <div class="col-lg-2">
+
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
+                aria-controls="v-pills-home" aria-selected="true">Home</a>
+            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+                aria-controls="v-pills-profile" aria-selected="false">Profile</a>
+            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
+                aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab"
+                aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                        aria-labelledby="v-pills-home-tab">...</div>
+                    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                        aria-labelledby="v-pills-profile-tab">...</div>
+                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
+                        aria-labelledby="v-pills-messages-tab">...</div>
+                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                        aria-labelledby="v-pills-settings-tab">...</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div id="display" class="col-lg-6">
+        <div class="card">
+            ola
+        </div>
+    </div> -->
+
+<div class="row p-0 m-0">
+    <div class="col-md-1 p-0 m-0">
+
+
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-type-tab" data-toggle="pill" href="#v-pills-type" role="tab"
+                aria-controls="v-pills-type" aria-selected="true">
+                <fa-icon class="d-block" [icon]="typeIcon"></fa-icon>
+                Tipo
+            </a>
+            <a class="nav-link" id="v-pills-data-tab" data-toggle="pill" href="#v-pills-data" role="tab"
+                aria-controls="v-pills-data" aria-selected="false">
+                <fa-icon class="d-block" [icon]="dataIcon"></fa-icon>
+                Datos
+            </a>
+            <a class="nav-link" id="v-pills-style-tab" data-toggle="pill" href="#v-pills-style" role="tab"
+                aria-controls="v-pills-style" aria-selected="false">
+                <fa-icon class="d-block" [icon]="styleIcon"></fa-icon>
+                Estilo
+            </a>
+            <a class="nav-link" id="v-pills-animations-tab" data-toggle="pill" href="#v-pills-animations" role="tab"
+                aria-controls="v-pills-animations" aria-selected="false">
+                <fa-icon class="d-block" [icon]="animationsIcon"></fa-icon>
+                Animaciones
+            </a>
+            <a class="nav-link" id="v-pills-export-tab" data-toggle="pill" href="#v-pills-export" role="tab"
+                aria-controls="v-pills-export" aria-selected="false">
+                <fa-icon class="d-block" [icon]="exportIcon"></fa-icon>
+                Exportar
+            </a>
+
+        </div>
+
+
+    </div>
+    <div class="col-md-3 p-0 m-0">
+        <div class="card" id="myTabContent">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-type" role="tabpanel"
+                    aria-labelledby="v-pills-type-tab">
+
+                    <input class="form-control mt-2" type="text" placeholder="Default input">
+                    <input class="form-control mt-2" type="text" placeholder="Default input">
+                    <input class="form-control mt-2" type="text" placeholder="Default input">
+
+                </div>
+                <div class="tab-pane fade text-light" id="v-pills-data" role="tabpanel"
+                    aria-labelledby="v-pills-data-tab">
+                    data
+                </div>
+                <div class="tab-pane fade text-light" id="v-pills-style" role="tabpanel"
+                    aria-labelledby="v-pills-style-tab">
+                    style
+                </div>
+                <div class="tab-pane fade text-light" id="v-pills-animations" role="tabpanel"
+                    aria-labelledby="v-pills-animations-tab">
+                    animations
+                </div>
+                <div class="tab-pane fade text-light text-center" id="v-pills-export" role="tabpanel"
+                    aria-labelledby="v-pills-export-tab">
+                    <h3 class="text-center text-light">Exportar como</h3>
+                    <button type="button" class="btn btn-primary exportButtom" (click)="savePNG()" download="graph.png">
+                        <fa-icon class="d-inline text-light" [icon]="downloadIcon"> </fa-icon>
+                        &nbsp;  PNG
+                    </button>
+                    <button type="button" class="btn btn-primary exportButtom" (click)="saveSVG()" download="graph.png">
+                        <fa-icon class="d-inline text-light " [icon]="downloadIcon"> </fa-icon>
+                        &nbsp;  SVG
+                    </button>
+                    <button type="button" class="btn btn-primary exportButtom" (click)="savePDF()" download="graph.png">
+                        <fa-icon class="d-inline text-light" [icon]="downloadIcon"> </fa-icon>
+                        &nbsp; PDF
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-8 p-0 m-0">
+        <div id="header">
+            <!-- <form class="needs-validation" [formGroup]="titleForm" (ngSubmit)="onSubmit(titleForm)" novalidate>
+                <input class="form-control" type="text" id="title" ngChange="changeTitle()" ng-model="title" formControlName="title"  placeholder="Título" required>
+
+            </form> -->
+            <!-- 
+            <form name="myForm" novalidate>     
+                <label>My Input:</label>
+                <input type="text" name="myInput" ng-model="myInput" required>
+                <span ng-show="myForm.myInput.$dirty && myForm.myInput.$invalid">My Input is invalid.</span>
+            </form>
+         -->
+            <!-- <input class="form-control" type="text" id="title"[formControl]="name"  placeholder="Título">
+              <p>
+                Value: {{ name.value }}
+              </p>
+
+              <form [formGroup]="titleForm">
+                <label>First Name: <input type="text" formControlName="title"></label>
+
+                </form>
+                <p>
+                    Value: {{ titleForm.title }}
+                  </p> -->
+
+            <form [formGroup]="titleForm">
+                <input class="form-control" type="text" formControlName="title" placeholder="Título"
+                    (focusout)="onFocusOutEvent($event)">
+            </form>
+
+        </div>
+
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <!-- <app-pie></app-pie> -->
+
+                <template #pruebaContainer></template>
+                <template #barContainer></template>
+
+                <!-- <h1 class="display-4">Fluid jumbotron</h1>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its
+                    parent.</p> -->
+
+                <button (click)="createComponent('success')">Create success alert</button>
+                <button (click)="createComponent('danger')">Create danger alert</button>
+                <!-- <input type="color" [(colorPicker)]="color" [style.background]="color"/> -->
+
+                <!-- <input [(colorPicker)]="color" [style.background]="color"/> -->
+                <!-- <color-sketch ></color-sketch> -->
+
+                <form [formGroup]="colorForm">
+                    <input type="color" id="favcolor" name="favcolor" formControlName="color"
+                        (focusout)="onFocusOutEventColor($event)" value="#ff0000">
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="container ml-0">
+    <div class="row mt-2">
+        <div class="col-md-auto ml-0 p-0">
+            <ul class="nav nav-tabs flex-column" id="myTab" role="tablist">
+                <li class="nav-item ">
+                    <a class="nav-link active " id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true"> <td class="align-middle"> 
+                            Home 
+                        </td> </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                        aria-controls="contact" aria-selected="false">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col m-0 p-0">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">home
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile
+                        </div>
+                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col col-lg-8  m-0 p-0">
+            <div class="card">
+                <div class="card-body">
+                </div>
+      </div>
+    </div>
+</div>
+
+ <ul class="nav nav-tabs flex-column" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">home</div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile</div>
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact</div>
+  </div> -->

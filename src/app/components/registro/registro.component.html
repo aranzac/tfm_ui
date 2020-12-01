@@ -1,7 +1,12 @@
   <div class="center">
-    <div class="card " style="width: 20rem;">
-    
+    <div class="card " style="width: 23rem;">
+      <div class="card-header text-center">
+        Registro
+      </div>
         <div class="card-body">
+          <div *ngIf="existing" class="alert alert-danger" role="alert">
+            El usuario o email ya existen.
+          </div>
             <form class="needs-validation" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)" novalidate>
               
                 <div class="form-group">
@@ -31,13 +36,8 @@
                 </div>
         
                 <div class="text-center">
-                <div class="form-group form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1" formControlName="check">
-                  <label class="form-check-label" for="exampleCheck1">Recuérdame</label>
-                </div>
-                <div *ngIf="existing" class="alert alert-danger" role="alert">
-                    El usuario o email ya existen.
-                  </div>                <button type="submit" class="btn btn-primary" >Enviar</button>
+                
+                                <button type="submit" class="btn btn-primary" >Enviar</button>
             </div>
               </form>
         </div>

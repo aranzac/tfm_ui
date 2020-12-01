@@ -1,0 +1,60 @@
+.nav-link{
+    border-bottom: 0.5px solid #1F271B;
+    border-right: 0.5px solid #1F271B;
+    border-radius: 0px;
+    /* height: 150px; */
+    /* padding: 1.5rem 1.5rem; */
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+
+    text-align: center;
+   }
+
+a.nav-link{
+    height: auto;
+}
+
+#myTabContent{
+    height: 600px;
+    background-color: #1F271B;
+    border-top-left-radius: 0;
+    padding: 20px;
+}
+
+.nav-pills .nav-link.active{
+    background-color: #1F271B;
+}
+
+.nav-pills .nav-link{
+    background-color: #0A425A;
+    color: white;
+}
+
+#header{
+    padding: 10px;
+}
+
+.jumbotron{
+    background-color: #F1F5F8;
+    height: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.tab-pane.fade.show{
+    padding: 1px;
+    width: 80%;
+    margin: auto;
+}
+
+fa-icon{
+font-size: 22px;
+}
+
+.exportButtom{
+    min-width: 50%;
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+    font-size: 1.1em;
+}

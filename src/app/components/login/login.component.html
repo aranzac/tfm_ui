@@ -1,28 +1,43 @@
 <div class="center">
-<div class="card " style="width: 20rem;">
-  <div *ngIf=data class="alert alert-success" role="alert">
-    {{data}}
+<div class="card " style="width: 23rem;">
+  <div class="card-header  text-center">
+    Inicio de sesión
   </div>
     <div class="card-body">
-        <form>
+      <div *ngIf="invalid" class="alert alert-danger" role="alert">
+        Datos incorrectos. Vuelve a intentarlo
+      </div>
+      <div *ngIf="serverError" class="alert alert-danger" role="alert">
+        Error en el servidor. Inténtalo más tarde
+      </div>
+        <form class="needs-validation" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)" novalidate>
             <div class="form-group">
-              <label for="exampleInputEmail1">Usuario</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-              <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+              <label for="name">Nombre de usuario</label>
+              <input type="email" class="form-control" id="name" formControlName="name" aria-describedby="emailHelp"  [ngClass]="{ 'is-invalid': submitted && myForm.controls.name.errors }">
+              <div *ngIf="submitted && myForm.controls.name.errors" class="invalid-feedback">
+                <div  class="form-text" *ngIf="myForm.controls.name.errors.required">Debes introducir un nombre de usuario</div>
             </div>
+            </div>
+
             <div class="form-group">
-              <label for="exampleInputPassword1">Contraseña</label>
-              <input type="password" class="form-control" id="exampleInputPassword1" >
+              <label for="password">Contraseña</label>
+              <input type="password" class="form-control" formControlName="password" id="password" [ngClass]="{ 'is-invalid': submitted && myForm.controls.password.errors }" >
+              <div *ngIf="submitted && myForm.controls.password.errors" class="invalid-feedback">
+                <div  class="form-text" *ngIf="myForm.controls.password.errors.required">Debes introducir una contraseña</div>
+            </div>
             </div>
             <div class="text-center">
-            <div class="form-group form-check">
-              <input type="checkbox" class="form-check-input" id="exampleCheck1">
-              <label class="form-check-label" for="exampleCheck1">Check me out</label>
-            </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+        
+            
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="check" formControlName="check">
+                <label class="form-check-label" for="check">Recuérdame</label>
+              </div>
+            <button type="submit" class="btn btn-primary" >Enviar</button>
         </div>
           </form>
     </div>
 
   </div>
 </div>
+
