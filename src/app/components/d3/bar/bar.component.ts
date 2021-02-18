@@ -1,62 +1,144 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
-import * as svg from 'save-svg-as-png';
-import jspdf from 'jspdf';
-import html2canvas from 'html2canvas';
+import { GraphContent } from 'src/app/models/graphContent';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { tsv } from 'd3';
 
 @Component({
   selector: 'bar',
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.css']
 })
+
 export class BarComponent implements OnInit {
 
-  
-  @Input() title: String = "Sin título";
-  @Output() output = new EventEmitter();
+  @Input() graphContent: GraphContent = { type: '', title: 'Sin título', data: [], color: ['#682626', '#682222'], width: 600, height: 500, attributes: [], owner: 'guest' };
+  @Input() graphForm: FormGroup;
 
+  selection: any;
+
+  private svg;
+  private margin = 50;
+  private width = 600 - (this.margin * 2);
+  private height = 400 - (this.margin * 2);
+  max;
+  min;
+  step;
+
+  range;
 
   private data = [
     { "Framework": "Vue", "Stars": "166443", "Released": "2014" },
     { "Framework": "React", "Stars": "150793", "Released": "2013" },
     { "Framework": "Angular", "Stars": "62342", "Released": "2016" },
     { "Framework": "Backbone", "Stars": "27647", "Released": "2010" },
-    { "Framework": "Ember", "Stars": "21471", "Released": "2011" },
+    { "Framework": "Ember", "Stars": "21471", "Released": "2011" }
   ];
 
-  private svgDataURL;
-  private pngDataURL;
-  private svg;
-  private margin = 50;
-  // Parametrables
-  private width = 750 - (this.margin * 2);
-  private height = 400 - (this.margin * 2);
+  // ----------- 1 ------------
+  constructor(private formBuilder: FormBuilder, private cdRef: ChangeDetectorRef) {
+    this.graphForm = this.formBuilder.group({
+      x: ['', { validators: [Validators.required], updateOn: "blur" }],
+      height: ['', { validators: [Validators.required], updateOn: "blur" }],
+      groups: ['', { validators: [], updateOn: "blur" }],
+      colors: ['', { validators: [], updateOn: "blur" }]
+    });
 
-  constructor() { }
+  }
 
-  ngOnInit(): void {
+  // ----------- 2 ------------
+  loadComponent() {
+  console.log(this.graphContent)
+  this.graphContent = { type: 'bar', title: 'Sin título', data: [], color: ['#682626', '#682222'], width: 600, height: 500, attributes: [], owner: 'guest' };
+    // Rellena los atributos con el nombre, si es obligatorio, los tipos que acepta y el campo elegido para ese atributo
+    this.graphContent.attributes = new Array();
+    this.graphContent.attributes.push({ name: 'x', required: true, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'height', required: false, types: ['number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'groups', required: false, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'colors', required: false, types: ['string'], headers: [], value: null })
+  }
+
+  // ----------- 3 ------------
+  ngOnInit() {
+  }
+
+  // ----------- 4 ------------
+  generate() {
+
+    console.log(this.graphContent)
+    const header = this.graphContent.data[0]
+
+    this.selection = this.graphContent.data.map(el => {
+      var target = {};
+      this.graphContent.attributes.forEach(at => {
+        let index = header.findIndex((el) => el == at.value)
+        target[at.name] = el[index]
+      })
+      return target;
+    })
+    this.selection.shift();
+
+
+    // Borrar la gráfica anterior
+    var elem = document.querySelector('#svg');
+    if (elem)
+      elem.parentNode.removeChild(elem);
+
     this.createSvg();
-    this.drawBars(this.data);
+    this.drawBars();
+  }
+
+  setRange(value: any) {
+    this.range = value;
+
+    this.cdRef.detectChanges();
+    const y = d3.scaleLinear()
+      .domain([value, this.max])
+      .range([this.height, 0])
+
+    this.svg.selectAll("g")
+      .transition().duration(1000)
+      .call(d3.axisLeft(y));
   }
 
   private createSvg(): void {
     this.svg = d3.select("figure#figure")
       .append("svg")
-      .attr("width", this.width + (this.margin * 2))
-      .attr("height", this.height + (this.margin * 2))
+      .attr("id", "svg")
+      .attr("width", this.width +100 + (this.margin * 2))
+      .attr("height", this.height + 100 + (this.margin * 2))
       .attr("version", 1.1)
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
+
+    // this.svg.append("text")
+    //   .attr("transform", "translate(100,0)")
+    //   .attr("x", 50)
+    //   .attr("y", 50)
+    //   .attr("font-size", "24px")
+    //   .text(this.graphContent.title)
   }
 
-  private drawBars(data: any[]): void {
+  private drawBars(): void {
+
+    let data = this.selection
+    this.max = Math.max.apply(Math, this.selection.map(function (el) { return el.height; }))
+    this.min = Math.min.apply(Math, this.selection.map(function (el) { return el.height; }))
+    this.step = 0.0107
 
     // Create the X-axis band scale
     const x = d3.scaleBand()
+      .domain(data.map(d => d.x))
+      // .rangeRound([this.margin, this.width])
       .range([0, this.width])
-      .domain(data.map(d => d.Framework))
       .padding(0.2);
+
+    // Create the Y-axis band scale
+    const y = d3.scaleLinear()
+      // .domain([min - min * 0.75, max + max * 0.75])
+      .range([this.height, 0])
+      .domain([0, this.max])
 
     // Draw the X-axis on the DOM
     this.svg.append("g")
@@ -67,158 +149,50 @@ export class BarComponent implements OnInit {
       .style("text-anchor", "end");
 
 
-    // Create the Y-axis band scale
-    const y = d3.scaleLinear()
-      .domain([0, 200000])
-      .range([this.height, 0]);
-
-    // Draw the Y-axis on the DOM
+    // // Draw the Y-axis on the DOM
     this.svg.append("g")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y))
 
+    let barWidth = Math.max(1, 0.9 * x.bandwidth());
+    let halfGap = Math.max(0, x.bandwidth() - barWidth) / 2;
+
+
+    console.log(this.graphContent.color)
     // Create and fill the bars
     this.svg.selectAll("bars")
       .data(data)
       .enter()
       .append("rect")
-      .attr("x", d => x(d.Framework))
-      .attr("y", d => y(d.Stars))
-      .attr("width", x.bandwidth())
-      .attr("height", (d) => this.height - y(d.Stars))
-      .attr("fill", "#d04a55");
-    console.log(this.svg)
+      .attr("x", d => x(d.x) + halfGap)
+      .attr("y", d => y(d.height))
+      .attr("width", barWidth)
+      .attr("height", (d) => this.height - y(d.height))
+      // .attr("fill", this.graphContent.color)
+      .attr("fill", (d, i)  => { return this.graphContent.color[i]});
+
   }
 
-  changeTitle(title) {
-    console.log("cambiando titulo:  " + title)
-    console.log(this.svg)
-    // this.svg.text(title);
-    this.title = title
+  changeRange() {
+    let data = this.selection
   }
+
 
   changeColor(color) {
+    this.graphContent.color = color
     this.svg.selectAll("rect").style("fill", color)
+
   }
 
-  private binary() {
-    var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); //wtf is atob?? https://developer.mozilla.org/en-US/docs/Web/API/Window.atob
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
-    for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+  update() {
+    if (this.graphContent) {
+      console.log("update", this.graphContent)
+      this.svg.selectAll("rect").style("fill", this.graphContent.color);
+      this.svg.attr("readonly", false);
+      console.log(document.querySelector("svg"))
+      d3.select("svg").attr("height", 0);
+      document.querySelector("svg")
+      document.getElementById('svg').setAttribute("height", this.graphContent.height.toString());
+      document.getElementById('svg').setAttribute("width", this.graphContent.width.toString());
     }
-    var dataView = new DataView(ab);
-    var blob = new Blob([dataView], { type: "image/png" });
-    var DOMURL = self.URL || self.webkitURL || self;
-    var newurl = URL.createObjectURL(blob);
-
-    var img = '<img src="' + newurl + '">';
-    d3.select("#img").html(img);
   }
-
-
-
-  savePNG() {
-
-    // Obtener la figura creada (es importante adjuntar la version y el xmlns)
-    var html = document.querySelector("#figure").innerHTML;
-
-    // URL EN SVG. Convertir la figura en una url de datos base64
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-    this.svgDataURL = imgsrc;
-
-    // Para obtener el PNG debemos cargar en una imagen y luego esa imagen en un canvas. Asi se podra coger el dataurl de png del canvas
-    var canvas = document.querySelector("canvas"), context = canvas.getContext("2d");
-
-      // URL EN PNG 
-      var canvasdata = canvas.toDataURL("image/png");
-
-      var a = document.createElement("a");
-      a.setAttribute("href", canvasdata)
-      a.setAttribute("download", "sample.png")
-      a.click(); // Simula un click
-
-  }
-
-
-
-
-  saveSVG() {
-    // Obtener la figura creada (es importante adjuntar la version y el xmlns)
-    var html = document.querySelector("#figure").innerHTML;
-
-    // URL EN SVG. Convertir la figura en una url de datos base64
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-    this.svgDataURL = imgsrc;
-
-    var a = document.createElement("a");
-    a.setAttribute("href", imgsrc)
-    a.setAttribute("download", "sample.svg")
-    a.click();
-
-    var html = document.querySelector("#figure").innerHTML
-  }
-
-  savePDF() {
-    this.pdf("figure")
-  }
-
-  private pdf (id)  {
-    var script = <HTMLElement>document.querySelector(id);
-    html2canvas(script).then(canvas => {
-      const contentDataURL = canvas.toDataURL('image/png')  
-      let pdf = new jspdf('l', 'cm', 'a4'); //Generates PDF in landscape mode
-      // let pdf = new jspdf('p', 'cm', 'a4'); //Generates PDF in portrait mode
-      pdf.addImage(contentDataURL, 'PNG', 0, 0, this.width/25, this.height/25);  
-      pdf.save('plot.pdf');   
-    }); 
-  }
-
 }
-
-
-/*
-BLOQUE FUNCIONA
-
-
- // Obtener la figura creada (es importante adjuntar la version y el xmlns)
-    var html = document.querySelector("#figure").innerHTML;
-
-    // URL EN SVG. Convertir la figura en una url de datos base64
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-    this.svgDataURL = imgsrc;
-
-    // Insertar url en un elemento imagen. Ya con esto tendríamos la imagen en svg
-    var img = '<img src="' + imgsrc + '">';
-    d3.select("#svgdataurl").html(img);
-
-
-    // Para obtener el PNG debemos cargar en una imagen y luego esa imagen en un canvas. Asi se podra coger el dataurl de png del canvas
-    var canvas = document.querySelector("canvas"), context = canvas.getContext("2d");
-
-    var image = new Image;
-    image.src = imgsrc;
-    image.onload = function () {
-      context.drawImage(image, 0, 0);
-
-      // URL EN PNG 
-      var canvasdata = canvas.toDataURL("image/png");
-      // this.pngDataURL = canvasdata
-
-
-      
-      var pngimg = '<img src="' + canvasdata + '">';
-      d3.select("#pngdataurl").html(pngimg);
-
-      var a = document.createElement("a");
-      a.setAttribute("href", canvasdata)
-      a.setAttribute("download", "sample.png")
-      a.click();
-
-      // var a = document.createElement("a");
-      // a.download = "sample.png";
-      // a.href = canvasdata;
-      // a.click(); // simula un click . Esto no nos interesa
-
-
-*/

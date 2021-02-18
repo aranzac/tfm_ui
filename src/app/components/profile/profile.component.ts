@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { RoleService } from 'src/app/services/role.service';
@@ -21,7 +22,8 @@ export class ProfileComponent implements OnInit {
   allowed: boolean = false;
   user: User ;
 
-  constructor(private http: HttpClient, private tokenService: TokenStorageService, private router: Router, private route: ActivatedRoute, private roleService: RoleService, private userService: UserService) {
+  constructor(private http: HttpClient, private tokenService: TokenStorageService, private router: Router, private route: ActivatedRoute, private roleService: RoleService, private userService: UserService,  private titleService: Title) {
+    this.titleService.setTitle("Perfil");
   }
 
   ngOnInit(): void {

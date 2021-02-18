@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavigationExtras, Router } from '@angular/router';
 import { RoleService } from 'src/app/services/role.service';
 import { Role } from 'src/app/models/role';
+import {Title} from "@angular/platform-browser";
 
 
 const httpOptions = {
@@ -38,7 +39,10 @@ export class RegistroComponent implements OnInit {
 
   
 
-  constructor(private http: HttpClient, private fb: FormBuilder, private router: Router, private roleService: RoleService) {}
+  constructor(private http: HttpClient, private fb: FormBuilder, private router: Router, private roleService: RoleService, private titleService:Title) {
+    this.titleService.setTitle("Registro");
+
+  }
 
   ngOnInit(): void {
 

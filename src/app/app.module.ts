@@ -17,9 +17,11 @@ import { BarComponent } from './components/d3/bar/bar.component';
 import { PieComponent } from './components/d3/pie/pie.component';
 import { ScatterComponent } from './components/d3/scatter/scatter.component';
 import { GeneratorComponent } from './components/d3/generator/generator.component';
-import { GalleryComponent } from './gallery/gallery.component'
+import { GalleryComponent } from './components/gallery/gallery.component'
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ColorSketchModule } from 'ngx-color/sketch';
+import { GenericGraphComponent } from './components/generic-graph/generic-graph.component';
+import * as $ from 'jquery';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { ColorSketchModule } from 'ngx-color/sketch';
     PieComponent,
     ScatterComponent,
     GeneratorComponent,
-    GalleryComponent
+    GalleryComponent,
+    GenericGraphComponent,
   ],
   imports: [
     BrowserModule,

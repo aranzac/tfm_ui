@@ -6,6 +6,7 @@ import { AUTH_SERVICE } from '../../app.constants';
 import { Auth } from 'src/app/models/auth';
 import { UserService } from 'src/app/services/user.service';
 import { TokenStorageService } from 'src/app/services/TokenStorageService';
+import { Title } from '@angular/platform-browser';
 
 const navigationExtras: NavigationExtras = { state: { data: 'logged' } };
 const httpOptions = {
@@ -35,7 +36,9 @@ export class LoginComponent implements OnInit {
   serverError: boolean = false;
 
 
-  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder, private userService: UserService, private tokenStorage: TokenStorageService) {
+  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder, private userService: UserService, private tokenStorage: TokenStorageService, private titleService: Title) {
+    this.titleService.setTitle("Inicio de sesión");
+
     const navigation = this.router.getCurrentNavigation();
     const state = navigation.extras.state as { data: string };
 

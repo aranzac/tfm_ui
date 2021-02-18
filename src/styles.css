@@ -1,1 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
 /* You can add global styles to this file, and also import other style files */
+html, body {
+    min-height: 100%;
+    height: auto;
+    margin: 0;
+    height: calc(100% - 58px);
+        /* overflow: hidden;  */ 
+
+    /* El fidden hace que  la pantalla no se mueva */
+  }
+
+
+
+  /* svg#svg {
+    width: 100%!important;
+    height: 100%!important; */
+/* } */
+
+
+
+
+.navbar {
+  position: relative;
+
+}

@@ -7,9 +7,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AdminprofileComponent } from './components/adminprofile/adminprofile.component'
 import { Page404Component } from './components/page404/page404.component';
 import { GeneratorComponent } from './components/d3/generator/generator.component';
-import { GalleryComponent } from './gallery/gallery.component';
-
-
+import { GalleryComponent } from './components/gallery/gallery.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },

@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="/">Graph</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+  <a class="navbar-brand title" href="/">Graph</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -11,12 +11,12 @@
         <a class="nav-link" href="/" [routerLink]="['/']">Inicio </a>
       </li>
       <li class="nav-item " [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-        <a class="nav-link" href="/gallery" [routerLink]="['/gallery']">Gallery </a>
+        <a class="nav-link" href="/gallery" [routerLink]="['/gallery']">Galería </a>
       </li>
       <li class="nav-item " [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" href="/generator" [routerLink]="['/generator']">Generador </a>
       </li>
-      
+
       <li class="nav-item " [routerLinkActive]="['active']" *ngIf="isLoggedIn" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" href="/profile" [routerLink]="['profile', username]"></a>
       </li>
@@ -32,56 +32,27 @@
       <!-- <li class="nav-item " [routerLinkActive]="['active']" *ngIf="isLoggedIn" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" href="/profile" [routerLink]="['profile', username]">Perfil</a>
       </li> -->
-<div *ngIf="isLoggedIn">
-  <ul class="nav navbar-nav">
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">{{username}}</a>
-      <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="supportedContentDropdown">
+      <div *ngIf="isLoggedIn">
+        <ul class="nav navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">{{username}}</a>
+            <div class="dropdown-menu" style="right: 0; left: auto;" aria-labelledby="supportedContentDropdown">
 
-        <a class="dropdown-item text-dark" href="/profile" [routerLink]="['profile', username]">Perfil</a>
+              <a class="dropdown-item text-dark" href="/profile" [routerLink]="['profile', username]">Perfil</a>
 
-        <a class="dropdown-item text-dark"  *ngIf="isAdmin"   href="/admin/profile" [routerLink]="['admin', 'profile', username]">Perfil de
-          administrador</a>
-          <div class="dropdown-divider"></div>
-
-            <a class="dropdown-item text-dark " title="Cerrar sesión" href="/" (click)="logout()">Cerrar sesión <fa-icon
-                [icon]="logoutIcon"></fa-icon></a>
-        </div>
-      </li>
-    </ul>
-</div>
-
-<!-- 
-            <div class="dropdown-item" [routerLinkActive]="['active']" *ngIf="isLoggedIn"
-              [routerLinkActiveOptions]="{exact:true}"> Perfil
-              <a class=" text-dark" href="/profile" [routerLink]="['profile', username]">Perfil</a>
-            </div>
-            <div class=" dropdown-item" [routerLinkActive]="['active']" *ngIf="isLoggedIn && isAdmin"
-              [routerLinkActiveOptions]="{exact:true}" [routerLink]="['admin', 'profile', username]">
-              <a class="text-dark" href="/admin/profile" [routerLink]="['admin', 'profile', username]">Perfil de
+              <a class="dropdown-item text-dark" *ngIf="isAdmin" href="/admin/profile"
+                [routerLink]="['admin', 'profile', username]">Perfil de
                 administrador</a>
+              <div class="dropdown-divider"></div>
+
+              <a class="dropdown-item text-dark " title="Cerrar sesión" href="/" (click)="logout()">Cerrar sesión
+                <fa-icon [icon]="logoutIcon"></fa-icon></a>
             </div>
-            <div class="dropdown-divider"></div>
-            <div class="nav-item dropdown-item" *ngIf="isLoggedIn">
-              <a class="text-dark" title="Cerrar sesión" href="/" (click)="logout()">Cerrar sesión <fa-icon
-                  [icon]="logoutIcon"></fa-icon></a>
-            </div> -->
-
-
-    
-
-      <!-- <li class="nav-item " [routerLinkActive]="['active']" *ngIf="isLoggedIn && isAdmin"
-        [routerLinkActiveOptions]="{exact:true}">
-        <a class="nav-link" href="/admin/profile" [routerLink]="['admin', 'profile', username]">Perfil de
-          administrador</a>
-      </li>
-      <li class="nav-item" *ngIf="isLoggedIn">
-        <a class="nav-link text-light" title="Cerrar sesión" href="/" (click)="logout()">Cerrar sesión <fa-icon
-            [icon]="logoutIcon"></fa-icon></a>
-      </li> -->
+          </li>
+        </ul>
+      </div>
     </ul>
   </div>
 </nav>
-
 <router-outlet></router-outlet>

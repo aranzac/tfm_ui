@@ -4,6 +4,12 @@
     color: transparent;
 } */
 
+
+.title{
+  font-family: 'Lobster', cursive;
+  font-size: 2em;
+}
+
 .dropdown-item.active{
     background-color: lightgrey;
     text-decoration: bold;
@@ -25,3 +31,13 @@ a:hover {
     text-decoration: none;
 
   } */
+  /* .container {
+    height: 100vh;
+    background: black;
+    color: white;
+  } */
+
+  /* svg#svg {
+    width: 100%!important;
+    height: 100%!important;
+} */

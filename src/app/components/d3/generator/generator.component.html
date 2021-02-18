@@ -1,236 +1,223 @@
-<!-- <div class="col-lg-2">
-
-        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
-                aria-controls="v-pills-home" aria-selected="true">Home</a>
-            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
-                aria-controls="v-pills-profile" aria-selected="false">Profile</a>
-            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"
-                aria-controls="v-pills-messages" aria-selected="false">Messages</a>
-            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab"
-                aria-controls="v-pills-settings" aria-selected="false">Settings</a>
-        </div>
-    </div>
-    <div class="col-lg-4">
-        <div class="tab-content" id="v-pills-tabContent">
-            <div class="card">
-                <div class="card-body">
-                    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
-                        aria-labelledby="v-pills-home-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
-                        aria-labelledby="v-pills-profile-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
-                        aria-labelledby="v-pills-messages-tab">...</div>
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab">...</div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    <div id="display" class="col-lg-6">
-        <div class="card">
-            ola
-        </div>
-    </div> -->
-
-<div class="row p-0 m-0">
+<div id="generator-container" class="row  p-0 m-0  ">
     <div class="col-md-1 p-0 m-0">
-
-
-        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <div class="nav flex-column nav-pills " id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link active" id="v-pills-type-tab" data-toggle="pill" href="#v-pills-type" role="tab"
                 aria-controls="v-pills-type" aria-selected="true">
                 <fa-icon class="d-block" [icon]="typeIcon"></fa-icon>
                 Tipo
             </a>
-            <a class="nav-link" id="v-pills-data-tab" data-toggle="pill" href="#v-pills-data" role="tab"
+            <a class="nav-link disabled" id="v-pills-data-tab" href="#v-pills-data" role="tab"
                 aria-controls="v-pills-data" aria-selected="false">
                 <fa-icon class="d-block" [icon]="dataIcon"></fa-icon>
                 Datos
             </a>
-            <a class="nav-link" id="v-pills-style-tab" data-toggle="pill" href="#v-pills-style" role="tab"
+            <a class="nav-link disabled" id="v-pills-style-tab" href="#v-pills-style" role="tab"
                 aria-controls="v-pills-style" aria-selected="false">
                 <fa-icon class="d-block" [icon]="styleIcon"></fa-icon>
                 Estilo
             </a>
-            <a class="nav-link" id="v-pills-animations-tab" data-toggle="pill" href="#v-pills-animations" role="tab"
+            <a class="nav-link disabled " id="v-pills-animations-tab" href="#v-pills-animations" role="tab"
                 aria-controls="v-pills-animations" aria-selected="false">
                 <fa-icon class="d-block" [icon]="animationsIcon"></fa-icon>
                 Animaciones
             </a>
-            <a class="nav-link" id="v-pills-export-tab" data-toggle="pill" href="#v-pills-export" role="tab"
+            <a class="nav-link disabled" id="v-pills-export-tab" href="#v-pills-export" role="tab"
                 aria-controls="v-pills-export" aria-selected="false">
                 <fa-icon class="d-block" [icon]="exportIcon"></fa-icon>
                 Exportar
             </a>
-
         </div>
-
-
     </div>
     <div class="col-md-3 p-0 m-0">
         <div class="card" id="myTabContent">
-            <div class="tab-content" id="v-pills-tabContent">
-                <div class="tab-pane fade show active" id="v-pills-type" role="tabpanel"
+            <div class="tab-content p-0 text-center" id="v-pills-tabContent">
+                <div class="tab-pane fade show active p-0" id="v-pills-type" role="tabpanel"
                     aria-labelledby="v-pills-type-tab">
+                    <h3 class="text-center text-light mt-4 mb-4">Elige la gráfica</h3>
 
-                    <input class="form-control mt-2" type="text" placeholder="Default input">
-                    <input class="form-control mt-2" type="text" placeholder="Default input">
-                    <input class="form-control mt-2" type="text" placeholder="Default input">
+                    <div class="row justify-content-center">
+                        <div class="col-4 p-0 mb-3" *ngFor="let item of graphList">
 
+                            <label class="text-center center-align centered">
+                                <input type="radio" class="card-input-element d-none" id="demo1"
+                                    (click)="changeType(item)" name="type" value="{{item.type}}">
+                                <img class="card card-img-top" style="height: 6rem; width: 6rem; align-self: center;" src="{{item.image}}"
+                                    >
+                                <span class="text-light">{{item.title}}</span>
+                            </label>
+
+
+                            <!-- <div class="card" style="width: 6rem;">
+                                <img class="card-img-top m-1" style="height: 5rem; width: 5rem;" src="{{item.image}}"
+                                    alt="Card image">
+                                <div class="card-body bodyType">
+                                    <a href="http://www.google.es" target="_blank" class="stretched-link p-0 m-0" title="{{item.title}}"></a>
+                                    <label class="btn btn-secondary btn-block buttonType">
+                                        <input type="radio" (click)="changeType(item)" name="type"
+                                            value="{{item.type}}">{{item.title}}
+                                    </label>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
                 </div>
-                <div class="tab-pane fade text-light" id="v-pills-data" role="tabpanel"
+                <div class="tab-pane fade text-light  mt-4 p-0 disabled" id="v-pills-data" role="tabpanel"
                     aria-labelledby="v-pills-data-tab">
-                    data
+
+                    <h3 class="text-center text-light mt-4 mb-4">Introduce los datos</h3>
+                    <p class="text-center text-light mt-1 mb-4">Puedes introducirlos manualmente o a través de ficheros
+                        .csv, .json</p>
+
+                    <div class="jumbotron jumbotron-fluid rounded">
+
+                        <div class="m-2">
+
+                            <div *ngIf="invalidFile" class="alert alert-danger p-1" role="alert">
+                                <strong>Error:</strong> El fichero no incluye etiquetas para los campos
+                            </div>
+                            <div class="custom-file form-group mx-sm-2 p-1">
+                                <input type="file" class="custom-file-input  mr-sm-2" id="customFileLang" lang="es"
+                                    accept=".json, .csv" (change)="previewFile($event.target.files)">
+                                <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
+                            </div>
+                            <!-- , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel -->
+
+                            <button type="submit" [disabled]="!fileUpload" (click)="uploadFile()"
+                                class="btn btn-primary mt-3 pl-3 pr-3">Subir</button>
+
+                            <div class="p-2 mt-2">
+                                <fa-icon *ngIf="showSpinner" class="d-inline icon-spinner " [icon]="spinnerIcon"
+                                    [spin]="true"> </fa-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="fileUploaded" class="jumbotron jumbotron-fluid rounded">
+                        <div class="mt-1">
+                            <div class="text-dark mb-3" *ngIf="typeList.length > 0">
+                                <form [formGroup]="attributeForm" novalidate>
+                                    <div class="row mb-2" *ngFor="let attribute of graphContent.attributes">
+                                        <div class="col-4">{{attribute.name}}</div>
+                                        <div class="col-8">
+                                            <select class="form-control formField" [id]="attribute.name"
+                                                [required]="attribute.required" name="header"
+                                                (change)="changeAttributes(attribute.name, $event.target.value)">
+                                                <option [ngValue]="undefined" disabled selected>Elige un campo</option>
+                                                <option *ngFor="let item of attribute.headers"
+                                                    [ngValue]="attribute.name">
+                                                    {{item.header}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <button type="submit" class="btn btn-primary" (click)="createComponent()"
+                                [disabled]="!requiredItems">Generar gráfica</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="tab-pane fade text-light" id="v-pills-style" role="tabpanel"
+                <div class="tab-pane fade text-light " id="v-pills-style" role="tabpanel"
                     aria-labelledby="v-pills-style-tab">
-                    style
+                    <h3 class="text-center text-light mt-4 mb-4">Configura el estilo</h3>
+
+                    <div class="justify">
+                        <form [formGroup]="styleForm" novalidate>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Selecciona un color</label>
+                                <input class="form-control" type="color" id="favcolor" name="favcolor"
+                                    formControlName="color" value="#6bc1d6">
+                            </div>
+                            <div class="form-group">
+                                <label for="width">Ancho</label>
+                                <input type="number" class="form-control" id="width" formControlName="width" min="1"
+                                    max="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Largo</label>
+                                <input type="number" class="form-control" id="height" formControlName="height" min="1"
+                                    max="5">
+                            </div>
+                            <p>**Generar colores aleatorios</p>
+                        </form>
+                    </div>
                 </div>
                 <div class="tab-pane fade text-light" id="v-pills-animations" role="tabpanel"
                     aria-labelledby="v-pills-animations-tab">
-                    animations
+                    <h3 class="text-center text-light mt-4 mb-4">Añade animaciones</h3>
                 </div>
                 <div class="tab-pane fade text-light text-center" id="v-pills-export" role="tabpanel"
                     aria-labelledby="v-pills-export-tab">
-                    <h3 class="text-center text-light">Exportar como</h3>
-                    <button type="button" class="btn btn-primary exportButtom" (click)="savePNG()" download="graph.png">
+                    <h3 class="text-center text-light mt-4 mb-4">Exportar como</h3>
+                    <div *ngIf="!created" class="alert p-0" role="alert">
+                        * Debes generar una gráfica primero
+                    </div>
+                    <button [disabled]="!created" type="button" class="btn btn-primary exportButtom mt-3"
+                        (click)="savePNG()" download="graph.png">
                         <fa-icon class="d-inline text-light" [icon]="downloadIcon"> </fa-icon>
-                        &nbsp;  PNG
+                        &nbsp; PNG
                     </button>
-                    <button type="button" class="btn btn-primary exportButtom" (click)="saveSVG()" download="graph.png">
+                    <button type="button" [disabled]="!created" class="btn btn-primary exportButtom" (click)="saveSVG()"
+                        download="graph.png">
                         <fa-icon class="d-inline text-light " [icon]="downloadIcon"> </fa-icon>
-                        &nbsp;  SVG
+                        &nbsp; SVG
                     </button>
-                    <button type="button" class="btn btn-primary exportButtom" (click)="savePDF()" download="graph.png">
+                    <button type="button" [disabled]="!created" class="btn btn-primary exportButtom" (click)="savePDF()"
+                        download="graph.png">
                         <fa-icon class="d-inline text-light" [icon]="downloadIcon"> </fa-icon>
                         &nbsp; PDF
                     </button>
-
                 </div>
             </div>
-
         </div>
     </div>
-    <div class="col-md-8 p-0 m-0">
-        <div id="header">
-            <!-- <form class="needs-validation" [formGroup]="titleForm" (ngSubmit)="onSubmit(titleForm)" novalidate>
-                <input class="form-control" type="text" id="title" ngChange="changeTitle()" ng-model="title" formControlName="title"  placeholder="Título" required>
+    <div class="col-md-8 p-3" id="generator">
+        <div class="container">
 
-            </form> -->
-            <!-- 
-            <form name="myForm" novalidate>     
-                <label>My Input:</label>
-                <input type="text" name="myInput" ng-model="myInput" required>
-                <span ng-show="myForm.myInput.$dirty && myForm.myInput.$invalid">My Input is invalid.</span>
-            </form>
-         -->
-            <!-- <input class="form-control" type="text" id="title"[formControl]="name"  placeholder="Título">
-              <p>
-                Value: {{ name.value }}
-              </p>
-
-              <form [formGroup]="titleForm">
-                <label>First Name: <input type="text" formControlName="title"></label>
-
-                </form>
-                <p>
-                    Value: {{ titleForm.title }}
-                  </p> -->
-
-            <form [formGroup]="titleForm">
-                <input class="form-control" type="text" formControlName="title" placeholder="Título"
-                    (focusout)="onFocusOutEvent($event)">
-            </form>
-
-        </div>
-
-        <div class="jumbotron jumbotron-fluid">
-            <div class="container">
-                <!-- <app-pie></app-pie> -->
-
-                <template #pruebaContainer></template>
-                <template #barContainer></template>
-
-                <!-- <h1 class="display-4">Fluid jumbotron</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its
-                    parent.</p> -->
-
-                <button (click)="createComponent('success')">Create success alert</button>
-                <button (click)="createComponent('danger')">Create danger alert</button>
-                <!-- <input type="color" [(colorPicker)]="color" [style.background]="color"/> -->
-
-                <!-- <input [(colorPicker)]="color" [style.background]="color"/> -->
-                <!-- <color-sketch ></color-sketch> -->
-
-                <form [formGroup]="colorForm">
-                    <input type="color" id="favcolor" name="favcolor" formControlName="color"
-                        (focusout)="onFocusOutEventColor($event)" value="#ff0000">
-                </form>
-                
+            <div class="row justify-content-between" id="header">
+                <div class="col-10">
+                    <form [formGroup]="titleForm">
+                        <input class="form-control" type="text" formControlName="title"
+                            placeholder="Modifica el título aquí">
+                    </form>
+                </div>
+                <div *ngIf="isLoggedIn" class="col-2 text-right">
+                    <button id="saveButtom" type="button" class="btn btn-outline-secondary  btn-block pl-2 pr-2"
+                        (click)="saveGraph()" [disabled]="!created">
+                        <span *ngIf="!saveSpinner">
+                            <fa-icon class="fa-sm" [icon]="downloadIcon"></fa-icon> Guardar
+                        </span>
+                        <span *ngIf="saveSpinner">
+                            <fa-icon class="fa-sm" [icon]="spinnerIcon" [spin]="true"></fa-icon> Loading...
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- <div class="container ml-0">
-    <div class="row mt-2">
-        <div class="col-md-auto ml-0 p-0">
-            <ul class="nav nav-tabs flex-column" id="myTab" role="tablist">
-                <li class="nav-item ">
-                    <a class="nav-link active " id="home-tab" data-toggle="tab" href="#home" role="tab"
-                        aria-controls="home" aria-selected="true"> <td class="align-middle"> 
-                            Home 
-                        </td> </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                        aria-controls="profile" aria-selected="false">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-                        aria-controls="contact" aria-selected="false">Contact</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col m-0 p-0">
-            <div class="card">
-                <div class="card-body">
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">home
-                        </div>
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile
-                        </div>
-                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact
-                        </div>
+        <div class="row ">
+            <div class="card-body">
+                <div *ngIf="saved" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <fa-icon class="fa-sm" [icon]="infoIcon"></fa-icon> La gráfica se ha guardado correctamente.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div *ngIf="errorSaved" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <fa-icon class="fa-sm" [icon]="infoIcon"></fa-icon> Ha habido un error guardando la gráfica.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="cuadro w-100 d-flex justify-content-center">
+                    <div *ngIf="showSpinnerGraph" class="text-center align-middle my-auto">
+                        <fa-icon class="d-inline icon-spinner big-icon" [icon]="spinnerIcon" [spin]="true"> </fa-icon>
+                    </div>
+                    <div class="text-center">
+                        <template #genericGraphContainer></template>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col col-lg-8  m-0 p-0">
-            <div class="card">
-                <div class="card-body">
-                </div>
-      </div>
     </div>
 </div>
-
- <ul class="nav nav-tabs flex-column" id="myTab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Contact</a>
-    </li>
-  </ul>
-  <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">home</div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile</div>
-    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact</div>
-  </div> -->

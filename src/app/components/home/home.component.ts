@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,9 +11,8 @@ export class HomeComponent implements OnInit {
 
 
   data: string
-  constructor(private router: Router) { 
-
-
+  constructor(private router: Router, private titleService: Title) { 
+    this.titleService.setTitle("Inicio");
     const navigation = this.router.getCurrentNavigation();
     const state = navigation.extras.state as {data: string};
 

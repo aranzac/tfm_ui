@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenStorageService } from './services/TokenStorageService';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { TitleService } from './services/title.service';
 
 @Component({
   selector: 'app-root',
@@ -10,16 +11,20 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  title: String;
+
   logoutIcon = faSignOutAlt;
-  title = 'ui';
+  // title = 'ui';
   session: boolean = false;
   isLoggedIn: boolean = false;
   isAdmin: boolean = false;
   username: string = '';
 
-  constructor(private tokenService: TokenStorageService, private activatedRoute: ActivatedRoute) { }
+  constructor(private tokenService: TokenStorageService, private activatedRoute: ActivatedRoute, private titleService: TitleService) { }
 
   ngOnInit(): void {
+    this.titleService.getTitle().subscribe(appTitle => this.title = appTitle);
+
     this.isAdmin = false;
     this.isLoggedIn = false;
     // Si hay localStorage pero no sessionStorage se guarda esta ultima recuperada de la local
