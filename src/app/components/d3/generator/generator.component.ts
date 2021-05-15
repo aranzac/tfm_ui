@@ -342,7 +342,10 @@ export class GeneratorComponent implements OnInit {
       elements = figure.getElementsByTagName("rect");
     else if (this.graphContent.type == "pie" || this.graphContent.type == "donut")
       elements = figure.getElementsByTagName("path");
-
+    else if(this.graphContent.type == "scatter"){
+      elements = figure.getElementsByTagName("circle");
+    }
+      
     Array.prototype.forEach.call(elements, function(el) {
       colors.push(el.getAttribute("fill"));
     })

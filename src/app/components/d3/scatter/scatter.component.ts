@@ -10,11 +10,11 @@ import { GraphContent } from 'src/app/models/graphContent';
 export class ScatterComponent implements OnInit {
 
 
-  @Input() graphContent: GraphContent = { id: 0, type: 'scatter', title: '', data: [], color: [], width: 400, height: 700, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'scatter', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
 
   private svg;
   private margin = 50;
-  private width = 750 - (this.margin * 2);
+  private width = 600 - (this.margin * 2);
   private height = 400 - (this.margin * 2);
   private colors;
   private selection;
@@ -66,10 +66,26 @@ export class ScatterComponent implements OnInit {
     this.svg = d3.select("figure#figure")
       .append("svg")
       .attr("id", "svg")
-      .attr("width", this.width + (this.margin * 2))
-      .attr("height", this.height + (this.margin * 2))
+      .attr("width", this.width + 100 + (this.margin * 2))
+      .attr("height", this.height + 100 + (this.margin * 2))
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
+  }
+
+  changeColors() {
+    d3.selectAll("rect")
+      .transition()
+      .duration(1000)
+      .style("fill", (d => this.randomColors()))
+  }
+
+  randomColors(){
+    var letters = '0123456789ABCDEF';
+    var color = '#'
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   private drawPlot(): void {
@@ -103,7 +119,12 @@ export class ScatterComponent implements OnInit {
       .attr("cy", d => y(d.y))
       .attr("r", 7)
       .style("opacity", .5)
-      .style("fill", "#69b3a2");
+      .attr("fill", ((d, inx) => {
+        if(this.graphContent.color.length != 0)
+          return this.graphContent.color[inx];
+        else
+          return this.randomColors();
+      }));
 
     dots.selectAll("text")
       .data(this.selection)
@@ -113,5 +134,6 @@ export class ScatterComponent implements OnInit {
       .attr("x", d => x(d.x)+ 15)
       .attr("y", d => y(d.y) + 5)
   }
+  
 
 }

@@ -38,7 +38,7 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
     this._graphContent = value;
     // console.log("setter graphContent")
     // if (this.created)
-      // this.onChanges();
+    // this.onChanges();
   }
 
   constructor(private resolver: ComponentFactoryResolver, private cdRef: ChangeDetectorRef) { }
@@ -63,7 +63,7 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   }
 
   createComponent() {
-    if(this.graphContent.data != null && this.graphContent.data.length != 0 && this.graphContent.attributes != null && this.graphContent.attributes.length != 0) {
+    if (this.graphContent.data != null && this.graphContent.data.length != 0 && this.graphContent.attributes != null && this.graphContent.attributes.length != 0) {
       this.loadComponent();
       this.created = true;
       this.genericGraphRef.instance.graphContent = this.graphContent
@@ -82,7 +82,7 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
     this.graphContent = content;
   }
 
-  randomColors(){
+  randomColors() {
     this.genericGraphRef.instance.changeColors();
   }
 
@@ -116,15 +116,25 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
 
 
   saveSVG() {
-    // Obtener la figura creada (es importante adjuntar la version y el xmlns)
-    var html = document.querySelector("#figure").innerHTML;
 
-    // URL EN SVG. Convertir la figura en una url de datos base64
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-    this.svgDataURL = imgsrc;
     var titulo = this.graphContent.title
+    var svg = document.getElementById("svg");
+    var serializer = new XMLSerializer();
+    var source = serializer.serializeToString(svg);
+
+    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    if (!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+      source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+    }
+
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+    var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+
     var a = document.createElement("a");
-    a.setAttribute("href", imgsrc)
+    a.setAttribute("href", url)
     a.setAttribute("download", titulo.replace(/\s/g, '') + ".svg")
     a.click();
   }
@@ -132,16 +142,17 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   savePDF() {
     var script = <HTMLElement>document.querySelector("figure");
     var titulo = this.graphContent.title
+    
     html2canvas(script).then(canvas => {
       const contentDataURL = canvas.toDataURL('image/png')
-      let pdf = new jspdf('l', 'cm', 'a4'); //Generates PDF in landscape mode
+      let pdf = new jspdf('l', 'mm', 'a4'); //Generates PDF in landscape mode
       // let pdf = new jspdf('p', 'cm', 'a4'); //Generates PDF in portrait mode
-      pdf.addImage(contentDataURL, 'PNG', 0, 0, this.graphContent.width / 25, this.graphContent.height / 25);
+      pdf.addImage(contentDataURL, 'PNG', 0, 0, this.graphContent.width / 1.5, this.graphContent.height / 4.5);
       pdf.save(titulo.replace(/\s/g, '') + '.pdf');
     });
   }
 
-  resetGeneric(){
+  resetGeneric() {
     this.genericGraphRef = null;
 
   }

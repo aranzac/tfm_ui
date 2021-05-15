@@ -54,8 +54,8 @@ export class PieComponent implements OnInit {
     this.svg = d3.select("figure#figure")
       .append("svg")
       .attr("id", "svg")
-      .attr("width", this.width)
-      .attr("height", this.height)
+      .attr("width", this.width - 100  + (this.margin * 2))
+      .attr("height", this.width + 100 + (this.margin * 2))
       .append("g")
       .attr(
         "transform",
