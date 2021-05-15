@@ -9,7 +9,7 @@ import { GraphContent } from 'src/app/models/graphContent';
 })
 export class PieComponent implements OnInit {
 
-  @Input() graphContent: GraphContent = { type: '', title: '', data: [], color: '#FF0000', width: 400, height: 700, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'pie', title: 'Sin título', data: [], color: [], width: 400, height: 700, attributes: [], owner: 'guest' };
 
   private svg;
   private margin = 50;
@@ -30,8 +30,8 @@ export class PieComponent implements OnInit {
     this.graphContent.attributes.push({ name: 'Label', required: false, types: ['string', 'number'], headers: [], value: null })
   }
 
-  generate() {
 
+  generate() {
     const header = this.graphContent.data[0]
 
     this.selection = this.graphContent.data.map(el => {
@@ -47,7 +47,6 @@ export class PieComponent implements OnInit {
     this.selection.shift();
 
     this.createSvg();
-    this.createColors();
     this.drawChart();
   }
 
@@ -64,10 +63,21 @@ export class PieComponent implements OnInit {
       );
   }
 
-  private createColors(): void {
-    this.colors = d3.scaleOrdinal()
-      .domain(this.selection.map(d => d.Arcs.toString()))
-      .range(["#c7d3ec", "#a5b8db", "#879cc4", "#677795", "#5a6782"]);
+  changeColors() {
+    d3.selectAll("path")
+      .transition()
+      .duration(1000)
+      .style("fill", (d => this.randomColors()))
+
+  }
+
+  randomColors(){
+    var letters = '0123456789ABCDEF';
+    var color = '#'
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   private drawChart(): void {
@@ -84,7 +94,12 @@ export class PieComponent implements OnInit {
         .innerRadius(0)
         .outerRadius(this.radius)
       )
-      .attr('fill', (d, i) => (this.colors(i)))
+      .attr("fill", ((d, inx) => {
+        if(this.graphContent.color.length != 0)
+          return this.graphContent.color[inx];
+        else
+          return this.randomColors();
+      }))
       .attr("stroke", "#121926")
       .style("stroke-width", "1px");
 

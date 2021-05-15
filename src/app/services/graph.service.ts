@@ -9,7 +9,6 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -28,4 +27,10 @@ export class GraphService {
     return this.http.get<GraphContent[]>(GRAPH_SERVICE + '/');
   }
 
+  public getById(id: any): Observable<GraphContent>{
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json'})
+    };
+    return this.http.get<GraphContent>(GRAPH_SERVICE + '/' + id);
+  }
 }

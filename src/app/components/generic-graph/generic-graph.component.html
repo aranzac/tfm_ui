@@ -1,2 +1,6 @@
 <!-- <figcaption *ngIf="graphContent" class="justify p-0">{{graphContent.title}}</figcaption> -->
 <template #container ></template>
+<div class="grey-text mt-5" *ngIf="noDataAlert">
+    <fa-icon class="d-inline alertIcon" [icon]="alertIcon"></fa-icon>
+    <p class="font-weight-bold">Ha ocurrido un error mostrando la gráfica...</p>
+</div>

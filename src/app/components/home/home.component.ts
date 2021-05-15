@@ -25,5 +25,9 @@ export class HomeComponent implements OnInit {
 
   }
 
+  linkClick(){
+    this.router.navigateByUrl('/generator');
+  }
+
    
 }

@@ -2,3 +2,11 @@ figcaption{
     text-align: justify;
     font-size: 1.3em;
 }
+
+.alertIcon{
+    font-size: 6em;
+}
+
+.grey-text{
+    color: rgb(194, 194, 194);
+}

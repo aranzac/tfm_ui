@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, ElementRef, Input, OnInit, Pipe, PipeTransform, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faChartBar, faTable, faPalette, faShareSquare, faStar, faSpinner, faDownload, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Title } from "@angular/platform-browser";
 import { GRAPHS } from 'src/app/models/graph-data';
@@ -9,7 +9,6 @@ import { GraphContent } from 'src/app/models/graphContent';
 import { Papa } from 'ngx-papaparse';
 import { GraphService } from 'src/app/services/graph.service';
 import { TokenStorageService } from 'src/app/services/TokenStorageService';
-import { of } from 'rxjs';
 
 type HeaderType = { header: string; type: string };
 
@@ -21,6 +20,7 @@ type HeaderType = { header: string; type: string };
 export class GeneratorComponent implements OnInit {
 
   headerRow: any[] = [];
+  parsedData: any;
 
   typeIcon = faChartBar;
   dataIcon = faTable;
@@ -65,10 +65,11 @@ export class GeneratorComponent implements OnInit {
   data: any[] = new Array();
 
   graphContent: GraphContent = {
+    id: null, 
     type: '',
     title: 'Sin título',
     data: [],
-    color: ['#6bc1d6'], // String | [String]
+    color: [],
     width: 1000,
     height: 1000,
     attributes: [],
@@ -110,7 +111,6 @@ export class GeneratorComponent implements OnInit {
       this.title = value
       this.graphContent.title = value;
       this.updateGraphContent();
-      console.log(value)
     });
 
     this.styleForm.controls['color'].valueChanges.subscribe(value => {
@@ -119,22 +119,18 @@ export class GeneratorComponent implements OnInit {
     });
     this.styleForm.controls['width'].valueChanges.subscribe(value => {
       this.graphContent.width = value;
-      console.log("changin width")
       this.updateGraphContent();
     });
     this.styleForm.controls['range'].valueChanges.subscribe(value => {
-      console.log("changin range 1")
 
     });
     this.styleForm.controls['height'].valueChanges.subscribe(value => {
       this.graphContent.height = value;
-      console.log("changin height")
-
       this.updateGraphContent();
     });
     this.graphForm.controls['type'].valueChanges.subscribe(value => {
       this.graphContent.type = value;
-
+      console.log("cahnge type")
       this.ready = true;
       if (this.created) {
         this.updateGraphContent();
@@ -145,12 +141,8 @@ export class GeneratorComponent implements OnInit {
 
   // Cargar el componente segun el tipo elegido para que devuelva su graphContent
   loadComponent() {
-
-
-
     // Comparar el tipo elegido con la lista de componentes de tipos
     let component = this.graphList.find(el => el.type == this.graphContent.type).component;
-
     if (component != undefined) {
       this.GenericGraphContainer.clear();
 
@@ -162,13 +154,16 @@ export class GeneratorComponent implements OnInit {
 
       // Darle el tipo de la componente a la instancia
       this.genericGraphRef.instance.component = component;
+      console.log(this.genericGraphRef.instance)
 
       // Cuando se crea correctamente el hijo (genericGraph)
       setTimeout(() => {
         if (this.genericGraphRef.instance.container) {
+          console.log(this.genericGraphRef.instance)
 
           // Llama al setter de graphContent
           this.graphContent = this.genericGraphRef.instance.graphContent;
+          console.log(this.genericGraphRef.instance)
         }
       }, 1000);
 
@@ -200,32 +195,29 @@ export class GeneratorComponent implements OnInit {
       document.querySelector('#svg').remove();
     }
 
-    this.genericGraphRef.instance.createComponent();
-
     // Mostrar el spinner mientras se crea la gráfica
     this.showSpinnerGraph = true;
-
 
     setTimeout(() => {
       this.genericGraphRef.instance.createComponent();
       this.showSpinnerGraph = false;
-    }, 0);
+      if (document.getElementById('svg')) {
+        this.created = true;
+  
+        // Activar panel de estilo, animaciones y exportar
+        this.activatePanel("#v-pills-export-tab")
+        this.activatePanel("#v-pills-animations-tab")
+        // this.activatePanel("#v-pills-style-tab")
+  
+      } else {
+        console.log('The element does not exists in the page.')
+      }
+    });
+
 
     // Si se ha creado el svg
-    if (document.querySelector('#svg')) {
-      this.created = true;
-
-      // Activar panel de estilo, animaciones y exportar
-      this.activatePanel("#v-pills-export-tab")
-      this.activatePanel("#v-pills-animations-tab")
-      this.activatePanel("#v-pills-style-tab")
-
-    } else {
-      console.log('The element does not exists in the page.')
-    }
+    
   }
-
-
 
   updateGraphContent() {
     if (this.genericGraphRef) {
@@ -233,7 +225,7 @@ export class GeneratorComponent implements OnInit {
     }
   }
 
-  // Comprobar el nombre y extensión del fichero especificado
+  // ------- 2 ------- Comprobar el nombre y extensión del fichero especificado
   previewFile(files: FileList) {
     this.saved = false;
 
@@ -243,15 +235,15 @@ export class GeneratorComponent implements OnInit {
       if ((ext == "json") || (ext == "csv") || (ext == "xls") || (ext == "xlsx")) {
         this.fileToUpload = files.item(0)
         this.fileUpload = true;
-
         this.loadComponent();
-
       }
       else
         this.fileUpload = false;
     }
   }
 
+
+  // ---------3---------
   // Cuando el fichero es válido, se parsea y se extraen las cabeceras y los valores dentro del graphContent.data
   uploadFile() {
     // Reset invalid condition
@@ -262,121 +254,166 @@ export class GeneratorComponent implements OnInit {
     this.typeList.length = 0;
 
     if (this.fileUpload) {
+      console.log(this.genericGraphRef.instance)
+
 
       this.showSpinner = true;
-      this.papa.parse(this.fileToUpload, {
-        dynamicTyping: true, // Para que parsee numeros y boolean correctamente, y no como strings
-        complete: parsedData => {
-
-          // Guardar la primera fila con las etiquetas
-          if (parsedData.data[0].every(el => typeof el == 'string')) {
-
-            this.headerRow = parsedData.data[0]
-            this.graphContent.data.push(parsedData.data[0])
-
-            // Recorrer la segunda línea para guardar los tipos de cada campo
-            parsedData.data[1].forEach((element, index) => {
-              this.typeList.push({ header: this.headerRow[index], type: typeof element })
-            });
-
-            // Comprobar para cada elemento que coincide con el tipo
-            parsedData.data.forEach((element, index) => {
-              if (index != 0 && index != 1) {
-
-                let valid = true;
-                element.forEach((el, inx) => {
-                  if (typeof el != this.typeList[inx].type)
-                    valid = false
-
-                  if (el < 0)
-                    element[inx] = 0;
-                })
-                if (valid)
-                  this.graphContent.data.push(element)
+      setTimeout(() => {
+        if (this.genericGraphRef.instance.container) {
+          this.papa.parse(this.fileToUpload, {
+            skipEmptyLines: true,
+            dynamicTyping: true, // Para que parsee numeros y boolean correctamente, y no como strings
+            complete: parsedData => {
+              // Guardar la primera fila con las etiquetas
+              if (parsedData.data[0].every(el => typeof el == 'string')) {
+    
+                this.headerRow = parsedData.data[0]
+                // this.graphContent.data.push(parsedData.data[0])
+    
+                // Recorrer la segunda línea para guardar los tipos de cada campo
+                parsedData.data[1].forEach((element, index) => {
+                  this.typeList.push({ header: this.headerRow[index], type: typeof element })
+                });
+    
+                this.parsedData = parsedData
+                this.fillGraphData();
+                this.fileUploaded = true;
               }
-            });
-            this.fileUploaded = true;
-          }
-          else {
-            this.invalidFile = true;
-            this.fileUploaded = false;
-            console.log("El fichero csv no incluye una fila de etiquetas de los campos")
-          }
-          this.showSpinner = false;
-
-          // Borrar cabeceras para que no aparezcan las de la consulta anterior
-          this.graphContent.attributes.forEach(attribute => {
-            attribute.headers = []
-          })
-          this.graphContent.attributes.forEach(attribute => {
-            this.typeList.forEach(header => {
-              if (attribute.types.includes(header.type))
-                attribute.headers.push(header)
-            });
+              else {
+                this.invalidFile = true;
+                this.fileUploaded = false;
+                console.log("El fichero csv no incluye una fila de etiquetas de los campos")
+              }
+              this.showSpinner = false;    
+            }
           });
-
         }
-      });
-
-      this.graphContent = this.genericGraphRef.instance.graphContent;
+      }, 1000);     
 
     }
   }
 
-  // this.saveSpinner = false;
+  fillGraphData() {
+
+    this.graphContent.data.push(this.headerRow)
+
+    // Comprobar para cada elemento que coincide con el tipo
+    this.parsedData.data.forEach((element, index) => {
+      if (index != 0 && index != 1) {
+
+        let valid = true;
+        element.forEach((el, inx) => {
+          // console.log(el + " " + inx)
+          // console.log(typeof el + " " + this.typeList[inx].header + this.typeList[inx].type)
+          if (typeof el != this.typeList[inx].type)
+            valid = false
+          if (el < 0)
+            element[inx] = 0;
+        })
+        if (valid && this.graphContent.data.length < 1000)
+          this.graphContent.data.push(element)
+      }
+    });
+
+    this.graphContent.attributes.forEach(attribute => {
+      attribute.headers = []
+    });
+    this.graphContent.attributes.forEach(attribute => {
+      this.typeList.forEach(header => {
+        if (attribute.types.includes(header.type)){
+          attribute.headers.push(header)
+        }
+      });
+    }); 
+  }
 
   saveGraph() {
 
     this.errorSaved = false;
     this.saved = false;
     this.saveSpinner = true;
-  
-      this.graphService.save(this.graphContent).subscribe(
-        data => {
-          this.saved = true;
-        },
-        error => {
-          this.errorSaved = true;
-          console.log("error from observable", error)
-        } ,
-        () => { this.saveSpinner = false; })
-  }
 
-  changeTitle() {
+    // Get definitive colors
+    var colors = [];
+    var figure = document.querySelector("#figure > svg > g");
+    var elements;
+    
+    if(this.graphContent.type == "bar")
+      elements = figure.getElementsByTagName("rect");
+    else if (this.graphContent.type == "pie" || this.graphContent.type == "donut")
+      elements = figure.getElementsByTagName("path");
 
+    Array.prototype.forEach.call(elements, function(el) {
+      colors.push(el.getAttribute("fill"));
+    })
+
+    this.graphContent.color = colors;
+
+    // Call service save method
+    this.graphService.save(this.graphContent).subscribe(
+      data => {
+        this.saved = true;
+      },
+      error => {
+        this.saveSpinner = false;
+        this.errorSaved = true;
+        console.log("Error from observable", error)
+      },
+      () => { this.saveSpinner = false; })
   }
 
   changeAttributes(item, data) {
+    
     this.graphContent.attributes.forEach(el => {
       if (el.name == item) {
         el.value = data
       }
     })
 
-    if (this.graphContent.attributes.filter(el => el.required).every(el => el.value))
+    if (this.graphContent.attributes.filter(el => el.required).every(el => el.value)){
       this.requiredItems = true;
+      this.activatePanel("#v-pills-style-tab")
+    }
   }
 
+  // ------ 1 -------
   changeType(value) {
 
+    this.fileUploaded = false;
     this.saved = false;
-
     this.requiredItems = false;
 
+    this.graphContent = {
+      id: null, 
+      type: '',
+      title: 'Sin título',
+      data: [],
+      color: [],
+      width: 1000,
+      height: 1000,
+      attributes: [],
+      owner: ''
+    };
+
+    if(document.getElementById("attributes") != null)
+      document.getElementById("attributes").outerHTML = "";
+
     if (this.graphList.find(el => el.type == value.type)) {
-      setTimeout(() => {
-        this.ready = true;
-        this.graphContent.type = value.type
-      }, 0);
-
-
+      this.ready = true;
+      this.graphContent.type = value.type
+            
       // Activar panel de datos
       this.activatePanel("#v-pills-data-tab")
+
+      this.loadComponent();
     }
     else {
       console.log("La opción escogida no es válida")
     }
+  }
 
+  randomColors(){
+    this.genericGraphRef.instance.randomColors();
   }
 
   saveSVG() {
@@ -395,7 +432,7 @@ export class GeneratorComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.componentRef != undefined)
-      this.componentRef.destroy();
+    if (this.genericGraphRef != undefined)
+      this.genericGraphRef.destroy();
   }
 }

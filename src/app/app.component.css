@@ -4,6 +4,9 @@
     color: transparent;
 } */
 
+#navbar{
+  background-color: #3AAED8;
+}
 
 .title{
   font-family: 'Lobster', cursive;
@@ -14,6 +17,11 @@
     background-color: lightgrey;
     text-decoration: bold;
 }
+
+div#navbarSupportedContent{
+  font-size: 1.1em;
+}
+
 /*
 .dropdown-item.active:hover{
     text-decoration: bold;

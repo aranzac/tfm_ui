@@ -2,10 +2,11 @@ type HeaderType = { header: string; type: string };
 type Attribute = { name: string; required: boolean; types: string[], headers: HeaderType[], value: any}
 
 export class GraphContent{
+    id: number;
     type: String;
     title: String;
     data: any[];
-    color: String | String[];
+    color: String[];
     width: number;
     height: number;
     attributes: Attribute[] = new Array();

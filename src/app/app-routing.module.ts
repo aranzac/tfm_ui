@@ -8,6 +8,7 @@ import { AdminprofileComponent } from './components/adminprofile/adminprofile.co
 import { Page404Component } from './components/page404/page404.component';
 import { GeneratorComponent } from './components/d3/generator/generator.component';
 import { GalleryComponent } from './components/gallery/gallery.component';
+import { DetailComponent } from './components/detail/detail.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: "admin/profile",redirectTo: "/"},
   { path: 'generator', component: GeneratorComponent},
   { path: "gallery", component: GalleryComponent},
+  { path: "detail/:id", component: DetailComponent},
     // TODAS LAS VISTAS NUEVAS AÑADIRLAS ANTES DE Page404Component
   { path: '**', component: Page404Component}
 ];

@@ -22,6 +22,12 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { ColorSketchModule } from 'ngx-color/sketch';
 import { GenericGraphComponent } from './components/generic-graph/generic-graph.component';
 import * as $ from 'jquery';
+import { D3Service } from 'd3-ng2-service'; 
+
+import { DonutComponent } from './components/d3/donut/donut.component';
+import { BoxComponent } from './components/d3/box/box.component';
+import { DetailComponent } from './components/detail/detail.component';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +45,9 @@ import * as $ from 'jquery';
     GeneratorComponent,
     GalleryComponent,
     GenericGraphComponent,
+    DonutComponent,
+    BoxComponent,
+    DetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +59,7 @@ import * as $ from 'jquery';
     ColorPickerModule,
     ColorSketchModule    
   ],
-  providers: [],
+  providers: [D3Service], 
   bootstrap: [AppComponent]
 })
 export class AppModule { }

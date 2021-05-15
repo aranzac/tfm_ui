@@ -12,7 +12,7 @@ import { tsv } from 'd3';
 
 export class BarComponent implements OnInit {
 
-  @Input() graphContent: GraphContent = { type: '', title: 'Sin título', data: [], color: ['#682626', '#682222'], width: 600, height: 500, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
   @Input() graphForm: FormGroup;
 
   selection: any;
@@ -27,14 +27,6 @@ export class BarComponent implements OnInit {
 
   range;
 
-  private data = [
-    { "Framework": "Vue", "Stars": "166443", "Released": "2014" },
-    { "Framework": "React", "Stars": "150793", "Released": "2013" },
-    { "Framework": "Angular", "Stars": "62342", "Released": "2016" },
-    { "Framework": "Backbone", "Stars": "27647", "Released": "2010" },
-    { "Framework": "Ember", "Stars": "21471", "Released": "2011" }
-  ];
-
   // ----------- 1 ------------
   constructor(private formBuilder: FormBuilder, private cdRef: ChangeDetectorRef) {
     this.graphForm = this.formBuilder.group({
@@ -48,24 +40,24 @@ export class BarComponent implements OnInit {
 
   // ----------- 2 ------------
   loadComponent() {
-  console.log(this.graphContent)
-  this.graphContent = { type: 'bar', title: 'Sin título', data: [], color: ['#682626', '#682222'], width: 600, height: 500, attributes: [], owner: 'guest' };
+
+    this.graphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
     // Rellena los atributos con el nombre, si es obligatorio, los tipos que acepta y el campo elegido para ese atributo
     this.graphContent.attributes = new Array();
     this.graphContent.attributes.push({ name: 'x', required: true, types: ['string', 'number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'height', required: false, types: ['number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'height', required: true, types: ['number'], headers: [], value: null })
     this.graphContent.attributes.push({ name: 'groups', required: false, types: ['string', 'number'], headers: [], value: null })
     this.graphContent.attributes.push({ name: 'colors', required: false, types: ['string'], headers: [], value: null })
   }
 
+
+
   // ----------- 3 ------------
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   // ----------- 4 ------------
   generate() {
 
-    console.log(this.graphContent)
     const header = this.graphContent.data[0]
 
     this.selection = this.graphContent.data.map(el => {
@@ -86,6 +78,7 @@ export class BarComponent implements OnInit {
 
     this.createSvg();
     this.drawBars();
+
   }
 
   setRange(value: any) {
@@ -105,19 +98,12 @@ export class BarComponent implements OnInit {
     this.svg = d3.select("figure#figure")
       .append("svg")
       .attr("id", "svg")
-      .attr("width", this.width +100 + (this.margin * 2))
+      .attr("width", this.width + 100 + (this.margin * 2))
       .attr("height", this.height + 100 + (this.margin * 2))
       .attr("version", 1.1)
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
-
-    // this.svg.append("text")
-    //   .attr("transform", "translate(100,0)")
-    //   .attr("x", 50)
-    //   .attr("y", 50)
-    //   .attr("font-size", "24px")
-    //   .text(this.graphContent.title)
   }
 
   private drawBars(): void {
@@ -157,7 +143,6 @@ export class BarComponent implements OnInit {
     let halfGap = Math.max(0, x.bandwidth() - barWidth) / 2;
 
 
-    console.log(this.graphContent.color)
     // Create and fill the bars
     this.svg.selectAll("bars")
       .data(data)
@@ -167,28 +152,38 @@ export class BarComponent implements OnInit {
       .attr("y", d => y(d.height))
       .attr("width", barWidth)
       .attr("height", (d) => this.height - y(d.height))
-      // .attr("fill", this.graphContent.color)
-      .attr("fill", (d, i)  => { return this.graphContent.color[i]});
-
+      .attr("fill", ((d, inx) => {
+        if(this.graphContent.color.length != 0)
+          return this.graphContent.color[inx];
+        else
+          return this.randomColors();
+      }));
   }
 
   changeRange() {
     let data = this.selection
   }
 
+  changeColors() {
+    d3.selectAll("rect")
+      .transition()
+      .duration(1000)
+      .style("fill", (d => this.randomColors()))
+  }
 
-  changeColor(color) {
-    this.graphContent.color = color
-    this.svg.selectAll("rect").style("fill", color)
-
+  randomColors(){
+    var letters = '0123456789ABCDEF';
+    var color = '#'
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   update() {
     if (this.graphContent) {
-      console.log("update", this.graphContent)
       this.svg.selectAll("rect").style("fill", this.graphContent.color);
       this.svg.attr("readonly", false);
-      console.log(document.querySelector("svg"))
       d3.select("svg").attr("height", 0);
       document.querySelector("svg")
       document.getElementById('svg').setAttribute("height", this.graphContent.height.toString());

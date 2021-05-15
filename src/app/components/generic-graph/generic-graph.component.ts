@@ -4,6 +4,7 @@ import { GRAPHS } from 'src/app/models/graph-data';
 import { GraphContent } from 'src/app/models/graphContent';
 import { Graph } from 'src/app/models/Graphs';
 import jspdf from 'jspdf';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'generic',
@@ -17,6 +18,7 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
 
   @Input() component: Type<T>
 
+
   @Input() get graphContent(): GraphContent {
     return this._graphContent;
   }
@@ -24,14 +26,19 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   private _graphContent: GraphContent;
   private created: boolean = false;
 
+
   genericGraphRef: ComponentRef<any>;
   svgDataURL;
+  alertIcon = faExclamationTriangle;
+  noDataAlert: boolean = false;
+
+
   // Setter y getter para forzar el cambio de la variable
   set graphContent(value: GraphContent) {
-    console.log("GraphContent setter", value);
     this._graphContent = value;
-    if (this.created)
-      this.onChanges();
+    // console.log("setter graphContent")
+    // if (this.created)
+      // this.onChanges();
   }
 
   constructor(private resolver: ComponentFactoryResolver, private cdRef: ChangeDetectorRef) { }
@@ -42,17 +49,11 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
     this.loadComponent();
   }
 
-  onChanges() {
-    if (this.genericGraphRef)
-      this.genericGraphRef.instance.update();
-  }
-
   loadComponent() {
 
     this.container.clear();
     let aux = this.component;
     const factory: ComponentFactory<typeof aux> = this.resolver.resolveComponentFactory<any>(this.component);
-
     this.genericGraphRef = this.container.createComponent(factory);
     this.genericGraphRef.instance.loadComponent();
 
@@ -62,12 +63,15 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   }
 
   createComponent() {
-    this.created = true;
-    this.genericGraphRef.instance.graphContent = this.graphContent
-    console.log(this.graphContent.data)
-    this.genericGraphRef.instance.generate()
+    if(this.graphContent.data != null && this.graphContent.data.length != 0 && this.graphContent.attributes != null && this.graphContent.attributes.length != 0) {
+      this.loadComponent();
+      this.created = true;
+      this.genericGraphRef.instance.graphContent = this.graphContent
+      this.genericGraphRef.instance.generate()
+    }
+    else
+      this.noDataAlert = true;
   }
-
 
   changeColor(color) {
     this.genericGraphRef.instance.changeColor(color);
@@ -76,6 +80,10 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   // Actualiza el contenido A LO MEJOR NO HACE FALTA
   updateContent(content: GraphContent) {
     this.graphContent = content;
+  }
+
+  randomColors(){
+    this.genericGraphRef.instance.changeColors();
   }
 
 
@@ -131,6 +139,11 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
       pdf.addImage(contentDataURL, 'PNG', 0, 0, this.graphContent.width / 25, this.graphContent.height / 25);
       pdf.save(titulo.replace(/\s/g, '') + '.pdf');
     });
+  }
+
+  resetGeneric(){
+    this.genericGraphRef = null;
+
   }
 
   ngOnDestroy() {
