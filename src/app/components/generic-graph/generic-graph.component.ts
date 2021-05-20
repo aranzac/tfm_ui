@@ -5,6 +5,7 @@ import { GraphContent } from 'src/app/models/graphContent';
 import { Graph } from 'src/app/models/Graphs';
 import jspdf from 'jspdf';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import * as svg from 'save-svg-as-png';
 
 @Component({
   selector: 'generic',
@@ -88,30 +89,7 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
 
 
   savePNG() {
-    // Obtener la figura creada (es importante adjuntar la version y el xmlns)
-    var html = document.querySelector("#figure").innerHTML;
-
-    // URL EN SVG. Convertir la figura en una url de datos base64
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-
-    // Para obtener el PNG debemos cargar en una imagen y luego esa imagen en un canvas. Asi se podra coger el dataurl de png del canvas
-    var canvas = document.querySelector("canvas"), context = canvas.getContext("2d");
-
-    var image = new Image;
-    image.src = imgsrc;
-
-    var titulo = this.graphContent.title
-    image.onload = function () {
-      context.drawImage(image, 0, 0);
-
-      // URL EN PNG 
-      var canvasdata = canvas.toDataURL("image/png");
-
-      var a = document.createElement("a");
-      a.setAttribute("href", canvasdata)
-      a.setAttribute("download", titulo.replace(/\s/g, '') + ".png")
-      a.click(); // Simula un click
-    }
+    svg.saveSvgAsPng(document.getElementById("svg"), "plot.png", {scale: 2, backgroundColor: "#FFFFFF"});
   }
 
 

@@ -1,3 +1,7 @@
 h1{
     font-size: 2rem;
 }
+
+canvas { border: thin solid green; }
+img { border: thin solid black; margin-right: 5px; }
+body { background-color: #DFF; }
