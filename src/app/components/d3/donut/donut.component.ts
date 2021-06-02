@@ -39,9 +39,8 @@ export class DonutComponent implements OnInit {
   loadComponent() {
     this.graphContent = { id: null, type: 'donut', title: 'Sin título', data: [], color: [], width: 450, height: 450, attributes: [], owner: 'guest' };
     this.graphContent.attributes = new Array();
-    this.graphContent.attributes.push({ name: 'name', required: true, types: ['string'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'value', required: true, types: ['number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'color', required: false, types: ['string'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'name', label: 'Nombre', required: false, types: ['string'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'value', label: 'Valor',  required: true, types: ['number'], headers: [], value: null })
   }
 
   arc() {
@@ -72,6 +71,7 @@ export class DonutComponent implements OnInit {
   createSvg() {
     this.svg = d3.select("figure").append("svg")
       .attr("id", "svg")
+      .attr("id", "svg")
       .attr("width", this.width)
       .attr("height", this.height)
       .attr("version", 1.1)
@@ -90,7 +90,7 @@ export class DonutComponent implements OnInit {
   }
 
   changeColors() {
-    d3.selectAll("path")
+    d3.selectAll("svg g  path")
       .transition()
       .duration(1000)
       .style("fill", (d => this.randomColors()))

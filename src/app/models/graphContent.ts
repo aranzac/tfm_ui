@@ -1,5 +1,5 @@
 type HeaderType = { header: string; type: string };
-type Attribute = { name: string; required: boolean; types: string[], headers: HeaderType[], value: any}
+type Attribute = { name: string; label: string; required: boolean; types: string[], headers: HeaderType[], value: any}
 
 export class GraphContent{
     id: number;

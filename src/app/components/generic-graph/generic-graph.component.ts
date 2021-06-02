@@ -64,14 +64,25 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   }
 
   createComponent() {
-    if (this.graphContent.data != null && this.graphContent.data.length != 0 && this.graphContent.attributes != null && this.graphContent.attributes.length != 0) {
-      this.loadComponent();
-      this.created = true;
-      this.genericGraphRef.instance.graphContent = this.graphContent
-      this.genericGraphRef.instance.generate()
-    }
-    else
-      this.noDataAlert = true;
+    setTimeout(() => {
+
+      console.log("GENERIC")
+      console.log(this.graphContent.data)
+      console.log(this.graphContent.data.length)
+      console.log(this.graphContent.attributes)
+      console.log(this.graphContent.attributes.length)
+      console.log("GENERIC end")
+
+      if (this.graphContent.data != null && this.graphContent.data.length != 0 && this.graphContent.attributes != null && this.graphContent.attributes.length != 0) {
+        console.log("entro")
+        this.loadComponent();
+        this.created = true;
+        this.genericGraphRef.instance.graphContent = this.graphContent
+        this.genericGraphRef.instance.generate()
+      }
+      else
+        this.noDataAlert = true;
+    });
   }
 
   changeColor(color) {
@@ -87,11 +98,9 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
     this.genericGraphRef.instance.changeColors();
   }
 
-
   savePNG() {
-    svg.saveSvgAsPng(document.getElementById("svg"), "plot.png", {scale: 2, backgroundColor: "#FFFFFF"});
+    svg.saveSvgAsPng(document.getElementById("svg"), this.graphContent.title.replace(/\s/g, '') + ".png", { scale: 2 });
   }
-
 
   saveSVG() {
 
@@ -120,7 +129,7 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   savePDF() {
     var script = <HTMLElement>document.querySelector("figure");
     var titulo = this.graphContent.title
-    
+
     html2canvas(script).then(canvas => {
       const contentDataURL = canvas.toDataURL('image/png')
       let pdf = new jspdf('l', 'mm', 'a4'); //Generates PDF in landscape mode

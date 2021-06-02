@@ -9,13 +9,13 @@ import { GraphContent } from 'src/app/models/graphContent';
 })
 export class PieComponent implements OnInit {
 
-  @Input() graphContent: GraphContent = { id: null, type: 'pie', title: 'Sin título', data: [], color: [], width: 400, height: 700, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'pie', title: 'Sin título', data: [], color: [], width: 750, height: 600, attributes: [], owner: 'guest' };
 
   private svg;
   private margin = 50;
   private width = 750;
   private height = 600;
-  private radius = Math.min(this.width, this.height) / 2 - this.margin;
+  private radius;
   private colors;
   private selection;
 
@@ -26,12 +26,14 @@ export class PieComponent implements OnInit {
 
   loadComponent() {
     this.graphContent.attributes = new Array();
-    this.graphContent.attributes.push({ name: 'Arcs', required: true, types: ['number'], headers: [], value: [] = new Array() })
-    this.graphContent.attributes.push({ name: 'Label', required: false, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'Arcs', label: 'Arcos', required: true, types: ['number'], headers: [], value: [] = new Array() })
+    this.graphContent.attributes.push({ name: 'Label', label: 'Etiqueta', required: false, types: ['string', 'number'], headers: [], value: null })
   }
 
 
   generate() {
+    console.log("PIE")
+    console.log(this.graphContent)
     const header = this.graphContent.data[0]
 
     this.selection = this.graphContent.data.map(el => {
@@ -44,6 +46,7 @@ export class PieComponent implements OnInit {
       return target;
     })
 
+    this.radius = Math.min(this.graphContent.width, this.graphContent.height) / 2 - this.margin;
     this.selection.shift();
 
     this.createSvg();
@@ -54,21 +57,20 @@ export class PieComponent implements OnInit {
     this.svg = d3.select("figure#figure")
       .append("svg")
       .attr("id", "svg")
-      .attr("width", this.width - 100  + (this.margin * 2))
-      .attr("height", this.width + 100 + (this.margin * 2))
+      .attr("width", this.graphContent.width  + (this.margin * 2))
+      .attr("height", this.graphContent.height  + (this.margin * 2))
       .append("g")
       .attr(
         "transform",
-        "translate(" + this.width / 2 + "," + this.height / 2 + ")"
+        "translate(" + this.graphContent.width / 2 + "," + this.graphContent.height / 2 + ")"
       );
   }
 
   changeColors() {
-    d3.selectAll("path")
+    d3.selectAll("svg g path")
       .transition()
       .duration(1000)
       .style("fill", (d => this.randomColors()))
-
   }
 
   randomColors(){

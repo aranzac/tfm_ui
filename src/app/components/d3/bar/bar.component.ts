@@ -12,7 +12,7 @@ import { tsv } from 'd3';
 
 export class BarComponent implements OnInit {
 
-  @Input() graphContent: GraphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 400, attributes: [], owner: 'guest' };
   @Input() graphForm: FormGroup;
 
   selection: any;
@@ -33,7 +33,6 @@ export class BarComponent implements OnInit {
       x: ['', { validators: [Validators.required], updateOn: "blur" }],
       height: ['', { validators: [Validators.required], updateOn: "blur" }],
       groups: ['', { validators: [], updateOn: "blur" }],
-      colors: ['', { validators: [], updateOn: "blur" }]
     });
 
   }
@@ -44,10 +43,9 @@ export class BarComponent implements OnInit {
     this.graphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
     // Rellena los atributos con el nombre, si es obligatorio, los tipos que acepta y el campo elegido para ese atributo
     this.graphContent.attributes = new Array();
-    this.graphContent.attributes.push({ name: 'x', required: true, types: ['string', 'number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'height', required: true, types: ['number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'groups', required: false, types: ['string', 'number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'colors', required: false, types: ['string'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'x', label: 'Eje x', required: true, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'height', label: 'Altura' ,required: true, types: ['number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'group', label: 'Grupo', required: false, types: ['string', 'number'], headers: [], value: null })
   }
 
 
@@ -69,7 +67,7 @@ export class BarComponent implements OnInit {
       return target;
     })
     this.selection.shift();
-
+    console.log(this.selection)
 
     // Borrar la gráfica anterior
     var elem = document.querySelector('#svg');
@@ -77,6 +75,7 @@ export class BarComponent implements OnInit {
       elem.parentNode.removeChild(elem);
 
     this.createSvg();
+    console.log("CREATED")
     this.drawBars();
 
   }
@@ -87,7 +86,7 @@ export class BarComponent implements OnInit {
     this.cdRef.detectChanges();
     const y = d3.scaleLinear()
       .domain([value, this.max])
-      .range([this.height, 0])
+      .range([this.graphContent.height, 0])
 
     this.svg.selectAll("g")
       .transition().duration(1000)
@@ -98,8 +97,8 @@ export class BarComponent implements OnInit {
     this.svg = d3.select("figure#figure")
       .append("svg")
       .attr("id", "svg")
-      .attr("width", this.width + 100 + (this.margin * 2))
-      .attr("height", this.height + 100 + (this.margin * 2))
+      .attr("width", this.graphContent.width + 100 + (this.margin * 2))
+      .attr("height", this.graphContent.height + 100 + (this.margin * 2))
       .attr("version", 1.1)
       .attr("xmlns", "http://www.w3.org/2000/svg")
       .append("g")
@@ -117,18 +116,18 @@ export class BarComponent implements OnInit {
     const x = d3.scaleBand()
       .domain(data.map(d => d.x))
       // .rangeRound([this.margin, this.width])
-      .range([0, this.width])
+      .range([0, this.graphContent.width])
       .padding(0.2);
 
     // Create the Y-axis band scale
     const y = d3.scaleLinear()
       // .domain([min - min * 0.75, max + max * 0.75])
-      .range([this.height, 0])
+      .range([this.graphContent.height, 0])
       .domain([0, this.max])
 
     // Draw the X-axis on the DOM
     this.svg.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
+      .attr("transform", "translate(0," + this.graphContent.height + ")")
       .call(d3.axisBottom(x))
       .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
@@ -151,7 +150,7 @@ export class BarComponent implements OnInit {
       .attr("x", d => x(d.x) + halfGap)
       .attr("y", d => y(d.height))
       .attr("width", barWidth)
-      .attr("height", (d) => this.height - y(d.height))
+      .attr("height", (d) => this.graphContent.height - y(d.height))
       .attr("fill", ((d, inx) => {
         if(this.graphContent.color.length != 0)
           return this.graphContent.color[inx];
@@ -165,7 +164,7 @@ export class BarComponent implements OnInit {
   }
 
   changeColors() {
-    d3.selectAll("rect")
+    d3.selectAll("svg g rect")
       .transition()
       .duration(1000)
       .style("fill", (d => this.randomColors()))

@@ -41,8 +41,8 @@
                             <label class="text-center center-align centered">
                                 <input type="radio" class="card-input-element d-none" id="demo1"
                                     (click)="changeType(item)" name="type" value="{{item.type}}">
-                                <img class="card card-img-top" style="height: 6rem; width: 6rem; align-self: center;" src="{{item.image}}"
-                                    >
+                                <img class="card card-img-top" style="height: 6rem; width: 6rem; align-self: center;"
+                                    src="{{item.image}}">
                                 <span class="text-light">{{item.title}}</span>
                             </label>
 
@@ -64,51 +64,117 @@
                 <div class="tab-pane fade text-light  mt-4 p-0 disabled" id="v-pills-data" role="tabpanel"
                     aria-labelledby="v-pills-data-tab">
 
-                    <h3 class="text-center text-light mt-4 mb-4">Introduce los datos</h3>
-                    <p class="text-center text-light mt-1 mb-4">Puedes introducirlos manualmente o a través de ficheros
-                        .csv, .json</p>
+                    <ul class="nav nav-pills mb-1 justify-content-center" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
+                                role="tab" aria-controls="pills-home" aria-selected="true">Cargar datos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
+                                role="tab" aria-controls="pills-profile" aria-selected="false">Datos de prueba</a>
+                        </li>
+                    </ul>
 
-                    <div class="jumbotron jumbotron-fluid rounded">
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                            aria-labelledby="pills-home-tab">
+                            <h3 class="text-center text-light mt-4 mb-4">Introduce los datos</h3>
+                            <p class="text-center text-light mt-1 mb-4">Puedes introducirlos manualmente o a través de
+                                ficheros
+                                .csv, .json</p>
 
-                        <div class="m-2">
+                            <div class="jumbotron jumbotron-fluid rounded">
 
-                            <div *ngIf="invalidFile" class="alert alert-danger p-1" role="alert">
-                                <strong>Error:</strong> El fichero no incluye etiquetas para los campos
-                            </div>
-                            <div class="custom-file form-group mx-sm-2 p-1">
-                                <input type="file" class="custom-file-input  mr-sm-2" id="customFileLang" lang="es"
-                                    accept=".json, .csv" (change)="previewFile($event.target.files)">
-                                <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
-                            </div>
-                            <!-- , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel -->
+                                <div class="m-2">
 
-                            <button type="submit" [disabled]="!fileUpload" (click)="uploadFile()"
-                                class="btn btn-primary mt-3 pl-3 pr-3">Subir</button>
+                                    <div *ngIf="invalidFile" class="alert alert-danger p-1" role="alert">
+                                        <strong>Error:</strong> El fichero no incluye etiquetas para los campos
+                                    </div>
+                                    <div class="custom-file form-group mx-sm-2 p-1">
+                                        <input type="file" class="custom-file-input  mr-sm-2" id="customFileLang"
+                                            lang="es" accept=".json, .csv" (change)="previewFile($event.target.files)">
+                                        <label class="custom-file-label" for="customFileLang">Seleccionar
+                                            Archivo</label>
+                                    </div>
+                                    <!-- , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel -->
 
-                            <div class="p-2 mt-2">
-                                <fa-icon *ngIf="showSpinner" class="d-inline icon-spinner " [icon]="spinnerIcon"
-                                    [spin]="true"> </fa-icon>
+                                    <button type="submit" [disabled]="!fileUpload" (click)="uploadFile()"
+                                        class="btn btn-primary mt-3 pl-3 pr-3">Subir</button>
+
+                                    <div class="p-2 mt-2">
+                                        <fa-icon *ngIf="showSpinner" class="d-inline icon-spinner " [icon]="spinnerIcon"
+                                            [spin]="true"> </fa-icon>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="pills-profile" role="tabpanel"
+                            aria-labelledby="pills-profile-tab">
+                            <h3 class="text-center text-light mt-4 mb-4">Utiliza los datos de prueba</h3>
+                            <div class="jumbotron jumbotron-fluid rounded">
+
+                                <div class="m-2">
+
+                                    <select class="form-control formField d-inline mb-3" name="files"
+                                        (change)="chooseFile($event.target.value)">
+                                        <option value="default" id="default" disabled selected>Elige los datos
+                                        </option>
+                                        <option *ngFor="let file of fileList" [value]="file.name">
+                                            {{file.name}}
+                                        </option>
+                                    </select>
+                                    <div class="p-2 mt-2">
+                                        <fa-icon *ngIf="showSpinnerDemo" class="d-inline icon-spinner " [icon]="spinnerIcon"
+                                            [spin]="true"> </fa-icon>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
+
+
+
+
 
                     <div id="attributes" *ngIf="fileUploaded" class="jumbotron jumbotron-fluid rounded">
                         <div class="mt-1">
                             <div class="text-dark mb-3" *ngIf="typeList.length > 0">
+                                <div class="row mb-2">
+                                    <div class="col-4">Nº filas:</div>
+                                    <div class="col-8">
+                                        <input type="number" [(ngModel)]="limitElements" class="form-control"
+                                            aria-describedby="numberElements" value=100 placeholder="100">
+                                    </div>
+                                </div>
                                 <form [formGroup]="attributeForm" novalidate>
+
                                     <div class="row mb-2" *ngFor="let attribute of graphContent.attributes">
-                                        <div class="col-4">{{attribute.name}}</div>
-                                        <div class="col-8">
-                                            <select *ngIf="attribute.headers.length > 0" class="form-control formField" [id]="attribute.name"
+                                        <div class="col-4">
+                                            <p><span *ngIf="attribute.required">* </span>
+                                                <span>{{attribute.label}}</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-7 inline-block attributes">
+                                            <select *ngIf="attribute.headers.length > 0"
+                                                class="form-control formField d-inline" [id]="attribute.name"
                                                 [required]="attribute.required" name="header"
                                                 (change)="changeAttributes(attribute.name, $event.target.value)">
-                                                <option [ngValue]="undefined" disabled selected>Elige un campo</option>
+                                                <option value="default" id="default" disabled selected>Elige un campo
+                                                </option>
                                                 <option *ngFor="let item of attribute.headers"
                                                     [ngValue]="attribute.name">
                                                     {{item.header}}
                                                 </option>
                                             </select>
                                         </div>
+                                        <div class="col-1">
+                                            <button (click)="reset(attribute.name)" type="button"
+                                                class="close close-button" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -122,26 +188,38 @@
                     <h3 class="text-center text-light mt-4 mb-4">Configura el estilo</h3>
 
                     <div class="justify">
-
+                        <h4 class="text-light mt-4 mb-2">Dimensiones</h4>
                         <form [formGroup]="styleForm" novalidate>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="exampleInputEmail1">Selecciona un color</label>
                                 <input class="form-control" type="color" id="favcolor" name="favcolor"
                                     formControlName="color" value="#6bc1d6">
-                            </div>
-
+                            </div> -->
                             <div class="form-group">
                                 <label for="width">Ancho</label>
-                                <input type="number" class="form-control" id="width" formControlName="width" min="1"
-                                    max="5">
+                                <input type="number" class="form-control" id="width" formControlName="width" min="100"
+                                    max="1000" [(ngModel)]="graphContent.width">
                             </div>
                             <div class="form-group">
                                 <label for="height">Largo</label>
-                                <input type="number" class="form-control" id="height" formControlName="height" min="1"
-                                    max="5">
+                                <input type="number" class="form-control" id="height" formControlName="height" min="100"
+                                    max="1000" [(ngModel)]="graphContent.height">
                             </div>
-                            <button *ngIf="created" type="button" class="btn btn-outline-secondary btn-block mt-3" (click)="randomColors()">Colores aleatorios</button>
+                            <small class="text-muted">El radio es calculado a partir del ancho y alto.</small>
+                            <button type="button" class="btn btn-outline-secondary btn-block mt-3"
+                                (click)="resize()">Redimensionar</button>
+                            <h4 class="text-light mt-4 mb-2">Estilo</h4>
+                            <div class="form-group">
+                                <label for="backgroundColor">Color de fondo</label>
+                                <input class="form-control" type="color" id="backgroundColor" name="favcolor"
+                                    formControlName="color" value="#ffffff">
+                            </div>
                         </form>
+                        <label>Color de elementos</label>
+                        <button *ngIf="created" type="button" class="btn btn-outline-secondary btn-block mt-1"
+                            (click)="randomColors()">Colores aleatorios</button>
+
+
                     </div>
                 </div>
                 <div class="tab-pane fade text-light" id="v-pills-animations" role="tabpanel"

@@ -36,11 +36,10 @@ export class ScatterComponent implements OnInit {
 
   loadComponent() {
     this.graphContent.attributes = new Array();
-    this.graphContent.attributes.push({ name: 'x', required: true, types: ['number', 'date'], headers: [], value: [] = new Array() })
-    this.graphContent.attributes.push({ name: 'y', required: true, types: ['date', 'number'], headers: [], value: [] = new Array() })
-    this.graphContent.attributes.push({ name: 'label', required: false, types: ['string', 'number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'size', required: false, types: ['number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'color', required: false, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'x',label: 'Eje x', required: true, types: ['number', 'date'], headers: [], value: [] = new Array() })
+    this.graphContent.attributes.push({ name: 'y', label: 'Eje y', required: true, types: ['date', 'number'], headers: [], value: [] = new Array() })
+    this.graphContent.attributes.push({ name: 'label',label: 'Etiqueta', required: false, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'size', label: 'Tamaño', required: false, types: ['number'], headers: [], value: null })
   }
 
   generate() {
@@ -73,7 +72,7 @@ export class ScatterComponent implements OnInit {
   }
 
   changeColors() {
-    d3.selectAll("rect")
+    d3.selectAll("svg g rect")
       .transition()
       .duration(1000)
       .style("fill", (d => this.randomColors()))

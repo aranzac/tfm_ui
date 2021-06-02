@@ -29,9 +29,8 @@ export class BoxComponent implements OnInit {
 
   loadComponent() {
     this.graphContent.attributes = new Array();
-    this.graphContent.attributes.push({ name: 'Y', required: false, types: ['string'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'Size', required: true, types: ['number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'Color', required: false, types: ['string', 'number'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'y', label: 'Eje Y', required: false, types: ['string'], headers: [], value: null })
+    this.graphContent.attributes.push({ name: 'size', label: 'Tamaño',required: true, types: ['number'], headers: [], value: null })
   }
 
 
@@ -61,6 +60,7 @@ export class BoxComponent implements OnInit {
 
     this.svg = d3.select("figure#figure")
       .append("svg")
+      .attr("id", "svg")
       .attr("width", this.width + this.margin + this.margin)
       .attr("height", this.height + this.margin + this.margin)
       .append("g")
