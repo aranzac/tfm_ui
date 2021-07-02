@@ -33,4 +33,16 @@ export class GraphService {
     };
     return this.http.get<GraphContent>(GRAPH_SERVICE + '/' + id);
   }
+
+
+
+  public deleteGraph(graph) {
+    var id = graph.id;
+    return this.http.delete(GRAPH_SERVICE + '/' + id, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  }
+
 }

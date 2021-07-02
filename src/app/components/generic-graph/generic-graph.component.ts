@@ -64,7 +64,6 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   }
 
   createComponent() {
-    setTimeout(() => {
 
       console.log("GENERIC")
       console.log(this.graphContent.data)
@@ -82,7 +81,6 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
       }
       else
         this.noDataAlert = true;
-    });
   }
 
   changeColor(color) {

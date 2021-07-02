@@ -28,6 +28,7 @@ export class RegistroComponent implements OnInit {
   existing: boolean;
   myForm: FormGroup;
   user: User = {
+    id: null,
     username: '',
     email: '',
     password: '',

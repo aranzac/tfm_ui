@@ -33,7 +33,6 @@ export class ProfileComponent implements OnInit {
       this.username = params['username'];
     })
 
-    //console.log(this.username)
     this.isLoggedIn = !!this.tokenService.getToken() || !!this.tokenService.getLocalToken();
 
     // Si no esta logueado, redirige a login
@@ -55,6 +54,7 @@ export class ProfileComponent implements OnInit {
       this.userService.setGlobalVar(this.token)
       this.userService.getLoggedUserByUsername(this.username).subscribe(data => {
         this.user = data;
+
           error => {
             console.log(error)
           }

@@ -7,6 +7,9 @@ import { TokenStorageService } from 'src/app/services/TokenStorageService';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { RoleService } from 'src/app/services/role.service';
 import { Role } from 'src/app/models/role';
+import { GraphService } from 'src/app/services/graph.service';
+import { GraphContent } from 'src/app/models/graphContent';
+import { Graph } from 'src/app/models/Graphs';
 
 @Component({
   selector: 'app-adminprofile',
@@ -20,8 +23,10 @@ export class AdminprofileComponent implements OnInit {
   isAdmin: boolean = false;
   accounts: User[];
   roles: Role[];
+  graphs: GraphContent[];
   allAccounts: User[];
   allRoles: Role[];
+  allGraphs: GraphContent[];
   myForm: FormGroup;
   myForm2: FormGroup;
   noResults: boolean = false;
@@ -30,8 +35,11 @@ export class AdminprofileComponent implements OnInit {
   noResultsRole: boolean = false;
   dataModifyRole: boolean = false;
   activeSearchRole;
+  noResultsGraph: boolean = false;
+  dataModifyGraph: boolean = false;
+  activeSearchGraph;
 
-  constructor(private tokenService: TokenStorageService, private fb: FormBuilder, private router: Router, private adminService: AdminService, private roleService: RoleService) {
+  constructor(private tokenService: TokenStorageService, private fb: FormBuilder, private router: Router, private adminService: AdminService, private roleService: RoleService, private graphService: GraphService) {
 
   }
 
@@ -70,11 +78,13 @@ export class AdminprofileComponent implements OnInit {
 
     this.adminService.setGlobalVar(this.tokenService.getToken());
     this.roleService.setGlobalVar(this.tokenService.getToken())
+
     //   //console.log(this.adminService.getGlobalVar())
     //   // console.log(this.adminService.getAccounts().subscribe())
 
     this.getAllAccounts()
     this.getAllRoles()
+    this.getAllGraphs()
 
     //   this.adminService.getAccountById(5).subscribe((data: User) => {
     //     console.log(data)
@@ -89,12 +99,17 @@ export class AdminprofileComponent implements OnInit {
   }
 
   getAllAccounts() {
-    console.log("todas las cuents")
     this.adminService.getAccounts().subscribe((data: User[]) => {
       this.accounts = data;
       this.allAccounts = data;
     })
+  }
 
+  getAllGraphs() {
+    this.graphService.getAll().subscribe((data: GraphContent[]) => {
+      this.graphs = data;
+      this.allGraphs = data;
+    })
   }
 
 
@@ -106,7 +121,7 @@ export class AdminprofileComponent implements OnInit {
     let users = [];
     this.allAccounts
       .forEach(x => {
-        if (((x.username.includes(this.activeSearch))||(x.email.includes(this.activeSearch))) && !users.includes(x))
+        if (((x.username.includes(this.activeSearch))||(x.email.includes(this.activeSearch))||(this.activeSearch.includes(x.id.toString()))) && !users.includes(x))
           users.push(x)
       })
 
@@ -128,6 +143,36 @@ export class AdminprofileComponent implements OnInit {
 
   deleteAccount(account) {
     this.adminService.deleteById(account.id).subscribe(() => { this.getAllAccounts() });
+  }
+
+  deleteGraph(graph){
+    this.graphService.deleteGraph(graph).subscribe(() => {this.getAllGraphs()})
+  }
+
+  searchGraphs(attribute){
+    this.activeSearchGraph = attribute.value.attribute
+    console.log(this.activeSearchGraph)
+
+    let graphss = [];
+    this.allGraphs.forEach(x => {
+      if (x.title.includes(this.activeSearchGraph) || x.type.includes(this.activeSearchGraph) || x.id.toString().includes(this.activeSearchGraph) || x.owner.includes(this.activeSearchGraph))
+        graphss.push(x)
+    })
+
+    if (graphss.length < 1)
+      this.noResultsGraph = true
+    else {
+      this.graphs = [];
+      this.graphs = graphss;
+      this.noResultsGraph = false
+      this.dataModifyGraph = true;
+    }
+  }
+
+  backToAllResultsGraphs(){
+    this.noResultsGraph = false;
+    this.dataModifyGraph = false;
+    this.graphs = this.allGraphs;
   }
 
   updateAccount(account) {
@@ -182,7 +227,10 @@ export class AdminprofileComponent implements OnInit {
 
   }
 
+
+
   deleteRole(role) {
+    console.log(role)
     this.roleService.deleteById(role.id).subscribe(() => { this.getAllRoles() })
   }
 
