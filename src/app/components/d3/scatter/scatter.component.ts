@@ -10,7 +10,7 @@ import { GraphContent } from 'src/app/models/graphContent';
 export class ScatterComponent implements OnInit {
 
 
-  @Input() graphContent: GraphContent = { id: null, type: 'scatter', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'scatter', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest',  publish: false , nlines: null};
 
   private svg;
   private margin = 50;
@@ -39,7 +39,6 @@ export class ScatterComponent implements OnInit {
     this.graphContent.attributes.push({ name: 'x',label: 'Eje x', required: true, types: ['number', 'date'], headers: [], value: [] = new Array() })
     this.graphContent.attributes.push({ name: 'y', label: 'Eje y', required: true, types: ['date', 'number'], headers: [], value: [] = new Array() })
     this.graphContent.attributes.push({ name: 'label',label: 'Etiqueta', required: false, types: ['string', 'number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'size', label: 'Tamaño', required: false, types: ['number'], headers: [], value: null })
   }
 
   generate() {
@@ -56,7 +55,6 @@ export class ScatterComponent implements OnInit {
     })
 
     this.selection.shift();
-    console.log(this.graphContent)
     this.createSvg();
     this.drawPlot();
   }
@@ -93,7 +91,6 @@ export class ScatterComponent implements OnInit {
     this.max = Math.max.apply(Math, this.selection.map(function (el) { return el.y; }))
     this.min = Math.min.apply(Math, this.selection.map(function (el) { return el.y; }))
     var maxX = Math.max.apply(Math, this.selection.map(function (el) { return el.x; }))
-    console.log(this.max + " " + this.min)
 
     const x = d3.scaleLinear()
       .domain([0, maxX])

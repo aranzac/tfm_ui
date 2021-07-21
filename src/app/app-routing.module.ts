@@ -21,7 +21,6 @@ const routes: Routes = [
   { path: 'generator', component: GeneratorComponent},
   { path: "gallery", component: GalleryComponent},
   { path: "detail/:id", component: DetailComponent},
-    // TODAS LAS VISTAS NUEVAS AÑADIRLAS ANTES DE Page404Component
   { path: '**', component: Page404Component}
 ];
 

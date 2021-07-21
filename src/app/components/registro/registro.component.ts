@@ -63,12 +63,10 @@ export class RegistroComponent implements OnInit {
   }
 
   onSubmit(myForm) {
-    //console.log(this.roleUser)
     this.existing = false;
     this.submitted = true;
      if(!myForm.value.check)
      myForm.value.check = false;
-     //console.log('check', myForm.value.check);
 
       if (myForm.valid) {
        
@@ -77,21 +75,15 @@ export class RegistroComponent implements OnInit {
         this.user.password = myForm.value.password
          this.user.enabled = true;
         //this.user.roles = this.roleUser;
-  
-      
-
-        console.log(this.user)
-        
+          
         this.http.post(USER_SERVICE + '/', JSON.stringify(this.user), httpOptions).subscribe(
           (data) => {
-            console.log(data);
             this.user = new User();
             this.router.navigate(['/login'], navigationExtras);
 
           },
           (error) => {
             this.existing=true;
-            console.log(error);
           }
         );
       }  

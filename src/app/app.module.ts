@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PruebaComponent } from './components/prueba/prueba.component';
 import { RegistroComponent } from './components/registro/registro.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ProfileComponent } from './components/profile/profile.component';
@@ -27,6 +26,7 @@ import { D3Service } from 'd3-ng2-service';
 import { DonutComponent } from './components/d3/donut/donut.component';
 import { BoxComponent } from './components/d3/box/box.component';
 import { DetailComponent } from './components/detail/detail.component';
+import { DendrogramComponent } from './components/d3/dendrogram/dendrogram.component';
 
 
 @NgModule({
@@ -34,7 +34,6 @@ import { DetailComponent } from './components/detail/detail.component';
     AppComponent,
     LoginComponent,
     HomeComponent,
-    PruebaComponent,
     RegistroComponent,
     ProfileComponent,
     AdminprofileComponent,
@@ -48,6 +47,7 @@ import { DetailComponent } from './components/detail/detail.component';
     DonutComponent,
     BoxComponent,
     DetailComponent,
+    DendrogramComponent,
   ],
   imports: [
     BrowserModule,

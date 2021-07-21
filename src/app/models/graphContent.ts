@@ -5,10 +5,12 @@ export class GraphContent{
     id: number;
     type: String;
     title: String;
-    data: any[];
+    data: any;
     color: String[];
     width: number;
     height: number;
     attributes: Attribute[] = new Array();
     owner: String;
+    publish: boolean;
+    nlines: number;
 }

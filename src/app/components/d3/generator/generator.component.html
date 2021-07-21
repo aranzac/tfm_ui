@@ -16,11 +16,6 @@
                 <fa-icon class="d-block" [icon]="styleIcon"></fa-icon>
                 Estilo
             </a>
-            <a class="nav-link disabled " id="v-pills-animations-tab" href="#v-pills-animations" role="tab"
-                aria-controls="v-pills-animations" aria-selected="false">
-                <fa-icon class="d-block" [icon]="animationsIcon"></fa-icon>
-                Animaciones
-            </a>
             <a class="nav-link disabled" id="v-pills-export-tab" href="#v-pills-export" role="tab"
                 aria-controls="v-pills-export" aria-selected="false">
                 <fa-icon class="d-block" [icon]="exportIcon"></fa-icon>
@@ -64,7 +59,7 @@
                 <div class="tab-pane fade text-light  mt-4 p-0 disabled" id="v-pills-data" role="tabpanel"
                     aria-labelledby="v-pills-data-tab">
 
-                    <ul class="nav nav-pills mb-1 justify-content-center" id="pills-tab" role="tablist">
+                    <!-- <ul class="nav nav-pills mb-1 justify-content-center" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
                                 role="tab" aria-controls="pills-home" aria-selected="true">Cargar datos</a>
@@ -73,7 +68,7 @@
                             <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
                                 role="tab" aria-controls="pills-profile" aria-selected="false">Datos de prueba</a>
                         </li>
-                    </ul>
+                    </ul> -->
 
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
@@ -81,7 +76,8 @@
                             <h3 class="text-center text-light mt-4 mb-4">Introduce los datos</h3>
                             <p class="text-center text-light mt-1 mb-4">Puedes introducirlos manualmente o a través de
                                 ficheros
-                                .csv, .json</p>
+                                .csv, .json
+                            </p>
 
                             <div class="jumbotron jumbotron-fluid rounded">
 
@@ -90,21 +86,27 @@
                                     <div *ngIf="invalidFile" class="alert alert-danger p-1" role="alert">
                                         <strong>Error:</strong> El fichero no incluye etiquetas para los campos
                                     </div>
-                                    <div class="custom-file form-group mx-sm-2 p-1">
+                                    <!-- <div class="mb-2">
+
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#exampleModal">
+                                            <fa-icon class="fa-lg text-dark" [icon]="infoIcon"></fa-icon>
+                                        </button>
+
+                                    </div> -->
+
+                                    <div class="custom-file form-group">
+                                        
                                         <input type="file" class="custom-file-input  mr-sm-2" id="customFileLang"
-                                            lang="es" accept=".json, .csv" (change)="previewFile($event.target.files)">
-                                        <label class="custom-file-label" for="customFileLang">Seleccionar
-                                            Archivo</label>
+                                            lang="es" accept=".json, .csv" (change)="previewFile($event)">
+                                        <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
                                     </div>
                                     <!-- , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel -->
 
                                     <button type="submit" [disabled]="!fileUpload" (click)="uploadFile()"
-                                        class="btn btn-primary mt-3 pl-3 pr-3">Subir</button>
-
-                                    <div class="p-2 mt-2">
-                                        <fa-icon *ngIf="showSpinner" class="d-inline icon-spinner " [icon]="spinnerIcon"
-                                            [spin]="true"> </fa-icon>
-                                    </div>
+                                        class="btn btn-primary mt-3 pl-3 pr-3">Subir <fa-icon *ngIf="showSpinner"
+                                            class="d-inline icon-spinner " [icon]="spinnerIcon" [spin]="true">
+                                        </fa-icon></button>
                                 </div>
                             </div>
                         </div>
@@ -124,8 +126,8 @@
                                         </option>
                                     </select>
                                     <div class="p-2 mt-2">
-                                        <fa-icon *ngIf="showSpinnerDemo" class="d-inline icon-spinner " [icon]="spinnerIcon"
-                                            [spin]="true"> </fa-icon>
+                                        <fa-icon *ngIf="showSpinnerDemo" class="d-inline icon-spinner "
+                                            [icon]="spinnerIcon" [spin]="true"> </fa-icon>
                                     </div>
                                 </div>
                             </div>
@@ -143,19 +145,19 @@
                                 <div class="row mb-2">
                                     <div class="col-4">Nº filas:</div>
                                     <div class="col-8">
-                                        <input type="number" [(ngModel)]="limitElements" class="form-control"
+                                        <input type="number" [(ngModel)]="graphContent.nlines" class="form-control"
                                             aria-describedby="numberElements" value=100 placeholder="100">
                                     </div>
                                 </div>
                                 <form [formGroup]="attributeForm" novalidate>
 
-                                    <div class="row mb-2" *ngFor="let attribute of graphContent.attributes">
-                                        <div class="col-4">
+                                    <div class="row second-row" *ngFor="let attribute of graphContent.attributes">
+                                        <div class="col col-4 little-col">
                                             <p><span *ngIf="attribute.required">* </span>
                                                 <span>{{attribute.label}}</span>
                                             </p>
                                         </div>
-                                        <div class="col-7 inline-block attributes">
+                                        <div class="col col-7 little-col inline-block attributes">
                                             <select *ngIf="attribute.headers.length > 0"
                                                 class="form-control formField d-inline" [id]="attribute.name"
                                                 [required]="attribute.required" name="header"
@@ -168,7 +170,7 @@
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="col-1">
+                                        <div class="col-1 little-col">
                                             <button (click)="reset(attribute.name)" type="button"
                                                 class="close close-button" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>

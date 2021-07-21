@@ -41,7 +41,6 @@ export class AppComponent {
 
     if (this.isLoggedIn) {
       if (this.tokenExpired(this.tokenService.getToken())) {
-        console.log("Token expirado")
         this.logout()
       } 
       //this.tokenService.getLocalAuthorities().includes("ADMIN")

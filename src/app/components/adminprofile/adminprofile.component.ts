@@ -73,28 +73,13 @@ export class AdminprofileComponent implements OnInit {
         this.router.navigate(['/']);
     }
 
-    //this.adminService.setHeaders(this.tokenService.getToken())
-    //console.log(this.adminService.getAccounts(this.tokenService.getToken()).subscribe());
-
     this.adminService.setGlobalVar(this.tokenService.getToken());
     this.roleService.setGlobalVar(this.tokenService.getToken())
-
-    //   //console.log(this.adminService.getGlobalVar())
-    //   // console.log(this.adminService.getAccounts().subscribe())
 
     this.getAllAccounts()
     this.getAllRoles()
     this.getAllGraphs()
 
-    //   this.adminService.getAccountById(5).subscribe((data: User) => {
-    //     console.log(data)
-    //   })
-
-
-
-    //   this.adminService.blockUserById(5).subscribe((data: User) => {
-    //     console.log(data)
-    //   });
 
   }
 
@@ -146,12 +131,12 @@ export class AdminprofileComponent implements OnInit {
   }
 
   deleteGraph(graph){
-    this.graphService.deleteGraph(graph).subscribe(() => {this.getAllGraphs()})
+    this.graphService.deleteGraph(graph).subscribe(() => this.getAllGraphs());
+
   }
 
   searchGraphs(attribute){
     this.activeSearchGraph = attribute.value.attribute
-    console.log(this.activeSearchGraph)
 
     let graphss = [];
     this.allGraphs.forEach(x => {
@@ -179,14 +164,10 @@ export class AdminprofileComponent implements OnInit {
 
     
     this.adminService.blockUserById(account.id).subscribe((data: User) => {
-      console.log(data)
-      console.log(this.dataModify)
       if (this.dataModify) {
         this.search(this.activeSearch)
-        console.log(this.dataModify)
       }
       else {
-        console.log(this.activeSearch)
         this.getAllAccounts()
       }
     })
@@ -211,7 +192,6 @@ export class AdminprofileComponent implements OnInit {
     if (roless.length < 1)
       this.noResultsRole = true
     else {
-      console.log("error role")
       this.roles = [];
       this.roles = roless;
       this.noResultsRole = false
@@ -220,18 +200,15 @@ export class AdminprofileComponent implements OnInit {
   }
 
   backToAllResultsRoles() {
-    console.log("resultados roles")
     this.noResultsRole = false;
     this.dataModifyRole = false;
     this.roles = this.allRoles;
 
   }
 
-
-
   deleteRole(role) {
-    console.log(role)
     this.roleService.deleteById(role.id).subscribe(() => { this.getAllRoles() })
+    
   }
 
 }

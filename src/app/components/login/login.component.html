@@ -10,6 +10,9 @@
       <div *ngIf="serverError" class="alert alert-danger" role="alert">
         Error en el servidor. Inténtalo más tarde
       </div>
+      <div *ngIf="blockedUser" class="alert alert-danger" role="alert">
+        Este usuario ha sido bloquedo.
+      </div>
         <form class="needs-validation" [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)" novalidate>
             <div class="form-group">
               <label for="name">Nombre de usuario</label>

@@ -11,28 +11,33 @@
                     <option value="" selected>Filtro...</option>
                     <option *ngFor="let item of graphList" value="{{item.type}}">{{item.title}}</option>
                 </select>
-                <button *ngIf="filterSelected" type="button" (click)="removeFilter()" class="ml-2 close" aria-label="Close">
+                <button *ngIf="filterSelected" type="button" (click)="removeFilter()" class="ml-2 close"
+                    aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         </div>
         <div class="p-2">
-            <input class="form-control " type="search" placeholder="Buscar" aria-label="Buscar" formControlName="search">
+            <input class="form-control " type="search" placeholder="Buscar" aria-label="Buscar"
+                formControlName="search">
         </div>
     </div>
 </form>
 <div class="container mb-5">
     <div *ngIf="graphListSearch.length > 0;else elsegraphs" class="row mt-3 mb-5">
-        <div *ngFor="let graph of graphListSearch" class="col-lg-2 col-md-4 col-sm-6">
-            <div class="card mb-3">
-                <img class="card-img-top" [src]="getImageUrl(graph.type)" alt="Card image cap">
-                <div class="card-body ">
-                    <h5 class="card-title">{{graph.title}}</h5>
-                    <a [routerLink]="['/detail', graph.id]" class="stretched-link p-0 m-0" title="{{graph.title}}"></a>
-                    <footer class="blockquote-footer">Por: {{graph.owner}}</footer>
+        <ng-container *ngFor="let graph of graphListSearch">
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div *ngIf="graph.publish" class="card mb-3">
+                    <img class="card-img-top" [src]="getImageUrl(graph.type)" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{graph.title}}</h5>
+                        <a [routerLink]="['/detail', graph.id]" class="stretched-link p-0 m-0"
+                            title="{{graph.title}}"></a>
+                        <footer class="blockquote-footer">Por: {{graph.owner}}</footer>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </div>
 <div class="final-margin"></div>

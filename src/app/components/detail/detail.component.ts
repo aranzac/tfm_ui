@@ -32,7 +32,6 @@ export class DetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    // console.log("ngoninit detail")
     this.getGraphData();
   }
 

@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn: boolean = false;
   invalid: boolean = false;
   serverError: boolean = false;
-
+  blockedUser: boolean = false
 
   constructor(private router: Router, private http: HttpClient, private fb: FormBuilder, private userService: UserService, private tokenStorage: TokenStorageService, private titleService: Title) {
     this.titleService.setTitle("Inicio de sesión");
@@ -91,9 +91,7 @@ export class LoginComponent implements OnInit {
 
         },
         error => {
-
           this.handleError(error)
-
         }
       );
     }
@@ -104,13 +102,18 @@ export class LoginComponent implements OnInit {
   }
 
   private handleError(error: Response | any) {
-    console.log(error);
-    if (error.status == 0) {
+    if (error.status == 500) {
       this.serverError = true;
       this.invalid = false;
-
-      return
     }
+    if(error.status == 401)
+      this.invalid = true;
+    if(error.error.message === "Blocked"){
+      this.invalid = false; 
+      this.serverError = false;
+      this.blockedUser = true;
+    }
+
   }
 }
 

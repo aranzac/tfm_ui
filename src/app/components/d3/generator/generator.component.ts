@@ -13,6 +13,8 @@ import { DEMOFILES } from 'src/app/models/demoFiles';
 import { HttpClient } from '@angular/common/http';
 import cars from '../../../../assets/files/cars.json';
 import { parse } from '@fortawesome/fontawesome-svg-core';
+import { CoordinatesModule } from 'ngx-color';
+import * as events from 'events';
 
 type HeaderType = { header: string; type: string };
 
@@ -34,8 +36,8 @@ export class GeneratorComponent implements OnInit {
   spinnerIcon = faSpinner;
   downloadIcon = faDownload;
   infoIcon = faInfoCircle;
+  
 
-  componentRef: ComponentRef<any>;
   genericGraphRef: ComponentRef<any>;
 
   titleForm: FormGroup;
@@ -50,7 +52,7 @@ export class GeneratorComponent implements OnInit {
 
   fileList = DEMOFILES;
 
-
+  fileChoosenToDownload: boolean = false;
   fileUpload: boolean = false;
   fileToUpload: File = null;
   fileUploaded: boolean = false;
@@ -80,11 +82,14 @@ export class GeneratorComponent implements OnInit {
     width: 500,
     height: 500,
     attributes: [],
-    owner: ''
+    owner: '',
+    publish: false,
+     nlines: null
   };
 
   limitElements: number = 0;
   parsed;
+  fileResult: any;
 
   backgroundColor = "";
 
@@ -151,8 +156,8 @@ export class GeneratorComponent implements OnInit {
 
   // Cargar el componente segun el tipo elegido para que devuelva su graphContent
   loadComponent() {
-    console.log("Load component")
     // Comparar el tipo elegido con la lista de componentes de tipos
+
     let component = this.graphList.find(el => el.type == this.graphContent.type).component;
     if (component != undefined) {
       this.GenericGraphContainer.clear();
@@ -172,7 +177,6 @@ export class GeneratorComponent implements OnInit {
 
           // Llama al setter de graphContent
           this.graphContent = this.genericGraphRef.instance.graphContent;
-          console.log(this.graphContent);
         }
       }, 1000);
 
@@ -181,8 +185,6 @@ export class GeneratorComponent implements OnInit {
     else {
       console.log("La componente elegida no fue encontrada")
     }
-    console.log("Fin Load component")
-
   }
 
   // Activar panel especificado
@@ -195,20 +197,15 @@ export class GeneratorComponent implements OnInit {
   // Cuando se han especificado los campos que pertenecen a cada atributo, se crea la gráfica y se renderiza
   createComponent() {
     var dataBackUp;
-    console.log(this.limitElements)
-    if (this.limitElements > 0) {
-      console.log
+    if (this.graphContent.nlines > 0) {
       var aux = [];
       // var bool = confirm("Este fichero es demasiado grande y la gráfica puede no visualizarse correctamente. Se va a proceder a limitar los datos a 100 elementos. ¿Deseas continuar?")
 
-      for (let i = 0; i < this.limitElements + 1 && i < this.graphContent.data.length; i++) {
+      for (let i = 0; i < this.graphContent.nlines + 1 && i < this.graphContent.data.length; i++) {
         aux.push(this.graphContent.data[i])
-        console.log(aux)
-
       }
       dataBackUp = this.graphContent.data
       this.graphContent.data = aux;
-      console.log(this.graphContent.data)
     }
 
 
@@ -231,22 +228,16 @@ export class GeneratorComponent implements OnInit {
     this.showSpinnerGraph = true;
 
     setTimeout(() => {
-
-      console.log(this.graphContent.data)
-      console.log("asks")
       this.genericGraphRef.instance.createComponent();
       this.showSpinnerGraph = false;
-      console.log(document.getElementById('svg'))
       if (document.getElementById('svg')) {
         this.created = true;
-        console.log("existeeeeeeeeeeeeee")
 
         if (this.backgroundColor != "") {
           var div = document.getElementById("svg");
           div.style.backgroundColor = this.backgroundColor;
         }
         this.saveColors();
-
 
         // Activar panel de estilo, animaciones y exportar
         this.activatePanel("#v-pills-export-tab")
@@ -255,8 +246,10 @@ export class GeneratorComponent implements OnInit {
       } else {
         console.log('The element does not exists in the page.')
       }
-      if (this.limitElements > 0)
+      if (this.graphContent.nlines > 0){
+        this.graphContent.nlines = this.graphContent.nlines
         this.graphContent.data = dataBackUp;
+      }
     });
 
   }
@@ -268,8 +261,14 @@ export class GeneratorComponent implements OnInit {
   }
 
   // ------- 2 ------- Comprobar el nombre y extensión del fichero especificado
-  previewFile(files: FileList) {
-    this.saved = false;
+  previewFile(event) {
+
+    this.fileResult = event.target
+    // console.log(this.graphContent)
+
+    var files: FileList;
+    files = event.target.files
+
 
     if (files.item(0)) {
       let ext = files.item(0).name.split('.').pop();
@@ -278,7 +277,6 @@ export class GeneratorComponent implements OnInit {
         this.fileToUpload = files.item(0)
         this.fileUpload = true;
         this.loadComponent();
-        console.log(this.graphContent)
       }
       else
         this.fileUpload = false;
@@ -301,14 +299,28 @@ export class GeneratorComponent implements OnInit {
 
       };
       reader.onerror = reject;
-      reader.readAsText(this.fileToUpload);
+      reader.readAsText(this.fileResult.files.item(0));
     });
+  }
+
+  getJsonFromFile(eventTarget) {
+
+
+    function readFile(file) {
+      return new Promise((resolve, reject) => {
+        var reader = new FileReader();
+        reader.onload = () => {
+          resolve(reader.result)
+        };
+        reader.onerror = reject;
+        reader.readAsText(eventTarget.files.item(0));
+      });
+    }
   }
 
   convertJsonToArray(parsed) {
     var keys = [];
     if (parsed != null && parsed != undefined) {
-      console.log(parsed)
       var auxParse = []
       for (var k in parsed[0]) keys.push(k);
 
@@ -323,7 +335,6 @@ export class GeneratorComponent implements OnInit {
 
         auxParse.push(row)
       }
-      console.log(auxParse)
       this.parsedData = auxParse
       this.showSpinner = false;
       return auxParse
@@ -334,182 +345,68 @@ export class GeneratorComponent implements OnInit {
   // Cuando el fichero es válido, se parsea y se extraen las cabeceras y los valores dentro del graphContent.data
   uploadFile() {
 
+    // Reset invalid condition
+    this.invalidFile = false
+    this.fileUploaded = false;
 
-// Reset invalid condition
-this.invalidFile = false
-this.fileUploaded = false;
+    //Borrar typelist para que no haya conflicto entre consultas distintas
+    this.typeList.length = 0;
 
-//Borrar typelist para que no haya conflicto entre consultas distintas
-this.typeList.length = 0;
+    if (this.fileUpload) {
+      this.showSpinner = true;
+      setTimeout(() => {
+        if (this.genericGraphRef.instance.container) {
 
-if (this.fileUpload) {
-  console.log(this.genericGraphRef.instance)
+          if (this.fileToUpload.name.endsWith(".json") && this.graphContent.type == "dendrogram") {
+            this.showSpinner = false;
+            setTimeout(() => {
+              this.parseData().then((successMessage) => {
+                this.graphContent.data = successMessage;
+                this.graphContent.attributes.push(undefined)
+                this.activatePanel("#v-pills-style-tab")
+                this.activatePanel("#v-pills-animations-tab")
+                this.activatePanel("#v-pills-export-tab")
 
-
-  this.showSpinner = true;
-  setTimeout(() => {
-    if (this.genericGraphRef.instance.container) {
-      this.papa.parse(this.fileToUpload, {
-        skipEmptyLines: true,
-        dynamicTyping: true, // Para que parsee numeros y boolean correctamente, y no como strings
-        complete: parsedData => {
-          // Guardar la primera fila con las etiquetas
-          if (parsedData.data[0].every(el => typeof el == 'string')) {
-
-            this.headerRow = parsedData.data[0]
-            // this.graphContent.data.push(parsedData.data[0])
-
-            // Recorrer la segunda línea para guardar los tipos de cada campo
-            parsedData.data[1].forEach((element, index) => {
-              this.typeList.push({ header: this.headerRow[index], type: typeof element })
-            });
-
-            this.parsedData = parsedData
-            this.fillGraphData();
-            this.fileUploaded = true;
+                this.genericGraphRef.instance.createComponent();
+                this.created = true;
+              });
+            })
           }
           else {
-            this.invalidFile = true;
-            this.fileUploaded = false;
-            console.log("El fichero csv no incluye una fila de etiquetas de los campos")
+            this.papa.parse(this.fileToUpload, {
+              skipEmptyLines: true,
+              dynamicTyping: true, // Para que parsee numeros y boolean correctamente, y no como strings
+              complete: parsedData => {
+
+                // Guardar la primera fila con las etiquetas
+                if (parsedData.data[0].every(el => typeof el == 'string')) {
+
+                  this.headerRow = parsedData.data[0]
+                  // this.graphContent.data.push(parsedData.data[0])
+
+                  // Recorrer la segunda línea para guardar los tipos de cada campo
+                  parsedData.data[1].forEach((element, index) => {
+                    this.typeList.push({ header: this.headerRow[index], type: typeof element })
+                  });
+
+                  this.parsedData = parsedData
+                  this.fillGraphData();
+                  this.fileUploaded = true;
+                }
+                else {
+                  this.invalidFile = true;
+                  this.fileUploaded = false;
+                  console.log("El fichero csv no incluye una fila de etiquetas de los campos")
+                }
+                this.showSpinner = false;
+              }
+            });
           }
-          this.showSpinner = false;    
         }
-      });
+      }, 1000);
+
     }
-  }, 1000);     
 
-}
-
-    // console.log("Upload File")
-    // var ext = this.fileToUpload.name.split('.').pop();
-    // // Reset invalid condition
-    // this.invalidFile = false
-    // this.fileUploaded = false;
-
-    // console.log(this.genericGraphRef.instance.container)
-    // console.log(ext)
-
-    // //Borrar typelist para que no haya conflicto entre consultas distintas
-    // this.typeList.length = 0;
-
-    // if (this.fileUpload) {
-    //   this.showSpinner = true;
-
-    //   if (this.genericGraphRef.instance.container) {
-
-    //     if (ext == 'json') {
-
-    //       this.parseData().then(data => {
-    //         console.log(data)
-    //         this.parsedData = data;
-    //         var auxParse = this.convertJsonToArray(data)
-
-
-
-    //         // Guardar la primera fila con las etiquetas
-    //         if (auxParse[0].every(el => typeof el == 'string')) {
-
-    //           this.headerRow = auxParse[0]
-    //           console.log(this.headerRow)
-
-    //           // Recorrer la segunda línea para guardar los tipos de cada campo
-    //           auxParse[1].forEach((element, index) => {
-    //             this.typeList.push({ header: this.headerRow[index], type: typeof element })
-    //           });
-    //           console.log(this.typeList)
-    //           this.fillGraphData();
-    //         }
-    //       });
-
-    //       // var promise = new Promise((resolve, reject) => {
-    //       //   var aux;
-    //       //   const reader = new FileReader();
-    //       //   reader.onload = () => {
-    //       //     aux = reader.result
-    //       //     resolve(JSON.parse(aux))
-    //       //   };
-    //       //   reader.onerror = reject;
-    //       //   reader.readAsText(this.fileToUpload);
-    //       // });
-
-
-    //       // promise.then(function (value) {
-    //       //   console.log(value);
-    //       //   this.parsedData = value;
-    //       // });
-
-
-    //       // var keys = [];
-    //       // if (parsed != null && parsed != undefined) {
-    //       //   console.log("not null")
-    //       //   console.log(this.parsedData)
-    //       //   for (var k in parsed[0]) keys.push(k);
-
-    //       //   this.parsedData.push(keys);
-
-    //       //   var array = Object.keys(parsed).map((key) => [Number(key), parsed[key]]);
-    //       //   for (var i = 0; i < array.length; i++) {
-
-    //       //     var row = [];
-    //       //     for (var j = 0; j < keys.length; j++)
-    //       //       row.push(array[i][1][keys[j]])
-
-    //       //     this.parsedData.push(row)
-    //       //   }
-    //       //   this.showSpinner = false;
-    //       //   this.fileUploaded = true;
-    //       // }
-    //       // else {
-    //       //   console.log("null")
-    //       //   console.log(parsed != null)
-    //       //   console.log(parsed != undefined)
-    //       //   console.log(parsed)
-    //       // }
-
-    //     }
-
-    //     if (ext == 'csv') {
-    //       console.log("csv")
-    //       this.papa.parse(this.fileToUpload, {
-    //         skipEmptyLines: true,
-    //         dynamicTyping: true, // Para que parsee numeros y boolean correctamente, y no como strings
-    //         complete: parsedData => {
-
-    //           this.parsedData = parsedData.data
-
-    //           // Guardar la primera fila con las etiquetas
-    //           if (parsedData.data[0].every(el => typeof el == 'string')) {
-    //             console.log("parsed data")
-    //             console.log(parsedData.data[0])
-
-
-    //             this.headerRow = parsedData.data[0]
-
-    //             // Recorrer la segunda línea para guardar los tipos de cada campo
-    //             parsedData.data[1].forEach((element, index) => {
-    //               this.typeList.push({ header: this.headerRow[index], type: typeof element })
-    //             });
-
-
-    //             this.fillGraphData();
-    //           }
-    //           else {
-    //             this.invalidFile = true;
-    //             this.fileUploaded = false;
-    //             console.log("El fichero csv no incluye una fila de etiquetas de los campos")
-    //             this.showSpinner = false;
-    //           }
-
-    //         }
-    //       });
-    //     }
-
-    //   }
-    // }
-    console.log(this.parsedData)
-    console.log("File " + this.fileUploaded)
-    console.log("Fin Upload File")
 
   }
 
@@ -524,8 +421,6 @@ if (this.fileUpload) {
 
         let valid = true;
         element.forEach((el, inx) => {
-          // console.log(el + " " + inx)
-          // console.log(typeof el + " " + this.typeList[inx].header + this.typeList[inx].type)
           if (typeof el != this.typeList[inx].type)
             valid = false
           if (el < 0)
@@ -541,59 +436,13 @@ if (this.fileUpload) {
     });
     this.graphContent.attributes.forEach(attribute => {
       this.typeList.forEach(header => {
-        if (attribute.types.includes(header.type)){
+        if (attribute.types.includes(header.type)) {
           attribute.headers.push(header)
         }
       });
-    }); 
+    });
 
-    // console.log("fillGRaphData")
-
-    // this.graphContent.data.push(this.headerRow);
-
-    // // Comprobar para cada elemento que coincide con el tipo
-    // this.parsedData.forEach((element, index) => {
-    //   if (index != 0 && index != 1) {
-
-    //     let valid = true;
-    //     element.forEach((el, inx) => {
-    //       // console.log(el + " " + inx)
-    //       // console.log(typeof el + " " + this.typeList[inx].header + this.typeList[inx].type)
-    //       if (typeof el != this.typeList[inx].type)
-    //         valid = false
-    //       if (el < 0)
-    //         element[inx] = 0;
-    //     })
-    //     if (valid && this.graphContent.data.length < 1000)
-    //       this.graphContent.data.push(element)
-    //   }
-    // });
-    // console.log(this.parsedData)
-
-    // setTimeout(() => {
-    //   this.graphContent.attributes.forEach(attribute => {
-    //     console.log("entra?")
-    //     attribute.headers = []
-    //   });
-    //   console.log(this.graphContent.attributes)
-
-    //   this.graphContent.attributes.forEach(attribute => {
-    //     this.typeList.forEach(header => {
-    //       console.log(header)
-    //       if (attribute.types.includes(header.type)) {
-    //         attribute.headers.push(header)
-    //       }
-    //     });
-    //   });
-    //   this.fileUploaded = true;
-    //   this.showSpinner = false;
-    //   console.log(this.graphContent.attributes)
-    //   console.log("this.fileUploaded " + this.fileUploaded)
-    //   console.log("this.showSpinner " + this.showSpinner)
-
-    //   console.log("fin fillGRaphData")
-    // }, 1000)
-
+   
 
 
 
@@ -612,6 +461,13 @@ if (this.fileUpload) {
       else if (this.graphContent.type == "scatter") {
         elements = figure.getElementsByTagName("circle");
       }
+      else if (this.graphContent.type == "box") {
+        elements = figure.getElementsByTagName("rect");
+      }
+      else if (this.graphContent.type == "dendrogram") {
+        elements = figure.getElementsByTagName("path");
+      }
+      console.log(elements)
 
       Array.prototype.forEach.call(elements, function (el) {
         colors.push(el.getAttribute("fill"));
@@ -668,7 +524,6 @@ if (this.fileUpload) {
 
   // ------ 1 -------
   changeType(value) {
-    console.log("change type")
     this.fileUploaded = false;
     this.saved = false;
     this.requiredItems = false;
@@ -682,7 +537,9 @@ if (this.fileUpload) {
       width: 1000,
       height: 1000,
       attributes: [],
-      owner: ''
+      owner: '',
+      publish: false,
+       nlines: null
     };
 
     if (document.getElementById("attributes") != null)
@@ -700,7 +557,18 @@ if (this.fileUpload) {
     else {
       console.log("La opción escogida no es válida")
     }
-    console.log("fin changetype")
+  }
+
+  setDownload(value) {
+    let path = this.fileList.find(file => file.name === value).path;
+    this.fileChoosenToDownload = true
+    let link = document.createElement('a');
+    link.setAttribute('type', 'hidden');
+    link.href = 'assets/file';
+    link.download = path;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
   reset(id) {

@@ -28,10 +28,6 @@ export class UserService {
     return this.token;
   }
 
-  //   public findAll(): Observable<User[]> {
-  //     return this.http.get<User[]>(this.usersUrl);
-  //   }
-
   public save(user: User) {
     return this.http.post<User>(this.usersUrl, user);
   }
@@ -53,46 +49,6 @@ export class UserService {
   attemptAuth(credentials: Auth): Observable<Object> {
     return this.http.post(AUTH_SERVICE + "/authenticate", JSON.stringify(credentials), httpOptions);
   }
-
-  // public authenticate(auth){
-  //   // return this.httpClient
-  //   // .post<any>("http://localhost:8080/authenticate", { username, password })
-  //   // .pipe(
-  //   //   map(userData => {
-  //   //     sessionStorage.setItem("username", username);
-  //   //     let tokenStr = "Bearer " + userData.token;
-  //   //     sessionStorage.setItem("token", tokenStr);
-  //   //     return userData;
-  //   //   })
-  //   // );
-  //   // return this.http.post<any>(AUTH_SERVICE + "/authenticate", JSON.stringify(auth).pipe(map(userData =>)))
-  //   // this.http.post(AUTH_SERVICE + "/authenticate", JSON.stringify(auth), httpOptions).subscribe(
-  //   //   (data) => {
-  //   //     console.log(data);
-  //   //     auth = new Auth();
-  //   //     console.log("todo bien")
-  //   //   },
-  //   //   (error) => {
-  //   //     // this.existing=true;
-  //   //     console.log(error);
-  //   //   }
-  //   // );
-
-
-  //   //   return this.httpClient
-  //   //     .post<any>("http://localhost:8080/authenticate", { username, password })
-  //   //     .pipe(
-  //   //       map(userData => {
-  //   //         sessionStorage.setItem("username", username);
-  //   //         let tokenStr = "Bearer " + userData.token;
-  //   //         sessionStorage.setItem("token", tokenStr);
-  //   //         return userData;
-  //   //       })
-  //   //     );
-
-
-
-  // }
 
 
   isUserLoggedIn() {

@@ -7,6 +7,6 @@ export const DEMOFILES = [
     },
     {
         name: 'Películas',
-        path: '../../../../assets/files/film.csv',
+        path: '/home/aranza/ui/ui/src/assets/files/film.csv',
     }
 ]

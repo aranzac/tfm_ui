@@ -6,6 +6,10 @@ import { User } from 'src/app/models/user';
 import { RoleService } from 'src/app/services/role.service';
 import { TokenStorageService } from 'src/app/services/TokenStorageService';
 import { UserService } from 'src/app/services/user.service';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { GraphService } from 'src/app/services/graph.service';
+import { GraphContent } from 'src/app/models/graphContent';
+import { Graph } from 'src/app/models/Graphs';
 
 @Component({
   selector: 'app-profile',
@@ -21,8 +25,11 @@ export class ProfileComponent implements OnInit {
   private sub: any;
   allowed: boolean = false;
   user: User ;
+  userIcon = faUser;
+  allGraphs: GraphContent[];
 
-  constructor(private http: HttpClient, private tokenService: TokenStorageService, private router: Router, private route: ActivatedRoute, private roleService: RoleService, private userService: UserService,  private titleService: Title) {
+
+  constructor(private http: HttpClient, private tokenService: TokenStorageService, private router: Router, private route: ActivatedRoute, private roleService: RoleService, private userService: UserService,  private titleService: Title, private graphService: GraphService) {
     this.titleService.setTitle("Perfil");
   }
 
@@ -54,23 +61,38 @@ export class ProfileComponent implements OnInit {
       this.userService.setGlobalVar(this.token)
       this.userService.getLoggedUserByUsername(this.username).subscribe(data => {
         this.user = data;
-
+        this.getGraphsByOwner();
           error => {
             console.log(error)
           }
       });
-      
-
-      // console.log(this.user) ESTE LOG NUNCA SE EJECUTARA DESPUES DE LA PETICION ANTERIOR. SUBSCRIBE ES ASINCRONO
-
-
-      // this.roleService.setGlobalVar(this.token)
-      // this.roleService.getRoles().subscribe(data => { console.log(data) }, error => { console.log("Error ") })
+    
     }
 
   }
 
-  // ngOnDestroy() {
-  //   this.route.params.unsubscribe();
-  //   }
+  getGraphsByOwner() {
+    this.graphService.getGraphsByOwner(this.user.username).subscribe((data: any) => {
+      this.allGraphs = data;
+    })
+  }
+
+  deleteGraph(graph){
+    this.graphService.deleteGraph(graph).subscribe(() => this.getGraphsByOwner());
+  }
+
+  publishGraph(graph: GraphContent){
+    graph.publish = true;
+    this.graphService.update(graph.id, graph).subscribe(() => {this.getGraphsByOwner()})
+
+  }
+  unpublishGraph(graph){
+    graph.publish = false;
+    this.graphService.update(graph.id, graph).subscribe(() => {this.getGraphsByOwner()})
+  }
+  
+  linkClick(id){
+    this.router.navigateByUrl("/detail/" + id);
+  }
+
 }

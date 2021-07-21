@@ -37,7 +37,6 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   // Setter y getter para forzar el cambio de la variable
   set graphContent(value: GraphContent) {
     this._graphContent = value;
-    // console.log("setter graphContent")
     // if (this.created)
     // this.onChanges();
   }
@@ -64,19 +63,19 @@ export class GenericGraphComponent<T> implements OnInit, AfterViewInit {
   }
 
   createComponent() {
-
-      console.log("GENERIC")
-      console.log(this.graphContent.data)
-      console.log(this.graphContent.data.length)
-      console.log(this.graphContent.attributes)
-      console.log(this.graphContent.attributes.length)
-      console.log("GENERIC end")
-
       if (this.graphContent.data != null && this.graphContent.data.length != 0 && this.graphContent.attributes != null && this.graphContent.attributes.length != 0) {
-        console.log("entro")
         this.loadComponent();
         this.created = true;
+        let nlines = this.graphContent.nlines
+        if( nlines != null && nlines > 0){
+          let aux = []
+          for (let i = 0; i < nlines + 1 && i < this.graphContent.data.length; i++) {
+            aux.push(this.graphContent.data[i])
+          }
+          this.graphContent.data = aux
+        }
         this.genericGraphRef.instance.graphContent = this.graphContent
+
         this.genericGraphRef.instance.generate()
       }
       else

@@ -54,20 +54,15 @@ export class AdminService {
   }
 
   public blockUserById(id): Observable<User> {
-    console.log("put")
     return this.http.put<User>(USER_SERVICE + '/block/' + id, this.getAccountById(id), {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + this.token
-
       }
     })
   }
 
-
   public deleteById(id) {
-
-
     return this.http.delete(USER_SERVICE + '/' + id, {
       headers: {
         'Content-Type': 'application/json',
@@ -75,11 +70,6 @@ export class AdminService {
       }
     })
   }
-
-  //  {headers: {'Content-Type': 'application/json',
-  //    'Authorization': 'Bearer ' + this.token,
-  //    'Access-Control-Allow-Methods': 'DELETE'}}
-
 
   errorHandler(error) {
     let errorMessage = '';
@@ -90,53 +80,6 @@ export class AdminService {
       // Get server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    //console.log(errorMessage);
     return throwError(errorMessage);
   }
-
-
-  // delete(id){
-  //   return this.httpClient.delete<Product>(this.apiServer + '/products/' + id, this.httpOptions)
-  //   .pipe(
-  //     catchError(this.errorHandler)
-  //   )
-  // }
-
-
-  // public setHeaders(token){
-  //   console.log("hola " + token)
-  //   let headers = new HttpHeaders({
-  //        "Content-Type": "application/json",
-  //        'Authorization': 'Bearer' + token
-  //      });
-  //   this.header = "guapa"
-  //   // this.header = new HttpHeaders({
-  //   //   "Content-Type": "application/json",
-  //   //   'Authorization': 'Bearer' + token
-  //   // })
-  //   console.log(this.header)
-  //   console.log(this.header)
-  //   console.log("ey " +  headers.getAll.toString)
-
-  // }
-
-
-  // getUsers(): Observable<User[]> {
-  //   return this.http.get<User[]>(this.apiurl).pipe(
-  //     tap(data => console.log(data)),
-  //     catchError(this.handleError)
-  //   );
-  // }
-
-
-
-
-  // this.http.get("https://reqres.in/api/users?page=2").subscribe(data => {
-  //   console.log(data);
-  // });
-
-
-
-
-
 }

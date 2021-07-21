@@ -27,8 +27,8 @@ export class GalleryComponent implements OnInit {
   ngOnInit(): void {
 
     this.graphService.getAll().subscribe((data: GraphContent[]) => {
-      this.graphs = data;
-      this.graphListSearch = data;
+      this.graphs = data.filter(el => el.publish)
+      this.graphListSearch = data.filter(el => el.publish);
     })
 
     this.searchForm = this.formBuilder.group({

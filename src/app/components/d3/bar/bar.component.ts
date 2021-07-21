@@ -12,7 +12,7 @@ import { tsv } from 'd3';
 
 export class BarComponent implements OnInit {
 
-  @Input() graphContent: GraphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 400, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 400, attributes: [], owner: 'guest',  publish: false , nlines: null};
   @Input() graphForm: FormGroup;
 
   selection: any;
@@ -32,7 +32,6 @@ export class BarComponent implements OnInit {
     this.graphForm = this.formBuilder.group({
       x: ['', { validators: [Validators.required], updateOn: "blur" }],
       height: ['', { validators: [Validators.required], updateOn: "blur" }],
-      groups: ['', { validators: [], updateOn: "blur" }],
     });
 
   }
@@ -40,12 +39,11 @@ export class BarComponent implements OnInit {
   // ----------- 2 ------------
   loadComponent() {
 
-    this.graphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest' };
+    this.graphContent = { id: null, type: 'bar', title: 'Sin título', data: [], color: [], width: 600, height: 500, attributes: [], owner: 'guest',  publish: false , nlines: null};
     // Rellena los atributos con el nombre, si es obligatorio, los tipos que acepta y el campo elegido para ese atributo
     this.graphContent.attributes = new Array();
     this.graphContent.attributes.push({ name: 'x', label: 'Eje x', required: true, types: ['string', 'number'], headers: [], value: null })
     this.graphContent.attributes.push({ name: 'height', label: 'Altura' ,required: true, types: ['number'], headers: [], value: null })
-    this.graphContent.attributes.push({ name: 'group', label: 'Grupo', required: false, types: ['string', 'number'], headers: [], value: null })
   }
 
 
@@ -67,7 +65,6 @@ export class BarComponent implements OnInit {
       return target;
     })
     this.selection.shift();
-    console.log(this.selection)
 
     // Borrar la gráfica anterior
     var elem = document.querySelector('#svg');
@@ -75,7 +72,6 @@ export class BarComponent implements OnInit {
       elem.parentNode.removeChild(elem);
 
     this.createSvg();
-    console.log("CREATED")
     this.drawBars();
 
   }

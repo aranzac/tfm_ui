@@ -9,7 +9,7 @@ import { GraphContent } from 'src/app/models/graphContent';
 })
 export class PieComponent implements OnInit {
 
-  @Input() graphContent: GraphContent = { id: null, type: 'pie', title: 'Sin título', data: [], color: [], width: 750, height: 600, attributes: [], owner: 'guest' };
+  @Input() graphContent: GraphContent = { id: null, type: 'pie', title: 'Sin título', data: [], color: [], width: 350, height: 400, attributes: [], owner: 'guest',  publish: false , nlines: null};
 
   private svg;
   private margin = 50;
@@ -32,8 +32,6 @@ export class PieComponent implements OnInit {
 
 
   generate() {
-    console.log("PIE")
-    console.log(this.graphContent)
     const header = this.graphContent.data[0]
 
     this.selection = this.graphContent.data.map(el => {

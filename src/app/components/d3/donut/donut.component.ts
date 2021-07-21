@@ -15,10 +15,8 @@ import * as _ from 'lodash';
 })
 export class DonutComponent implements OnInit {
 
-
   private d3: D3;
-  @Input() graphContent: GraphContent = { id: null, type: 'donut', title: 'Sin título', data: [], color: ['#682626', '#682222'], width: 600, height: 500, attributes: [], owner: 'guest' };
-  @Input() graphForm: FormGroup;
+  @Input() graphContent: GraphContent = { id: null, type: 'donut', title: 'Sin título', data: [], color: ['#682626', '#682222'], width: 600, height: 500, attributes: [], owner: 'guest',  publish: false, nlines: null};
 
   private svg;
   private margin = 50;
@@ -27,9 +25,6 @@ export class DonutComponent implements OnInit {
   private radius = 200;
   private selection;
 
-  private data = [{ name: "", value: "" }]
-
-
   constructor() {
   }
 
@@ -37,7 +32,7 @@ export class DonutComponent implements OnInit {
   }
 
   loadComponent() {
-    this.graphContent = { id: null, type: 'donut', title: 'Sin título', data: [], color: [], width: 450, height: 450, attributes: [], owner: 'guest' };
+    this.graphContent = { id: null, type: 'donut', title: 'Sin título', data: [], color: [], width: 450, height: 450, attributes: [], owner: 'guest',   publish: false , nlines: null };
     this.graphContent.attributes = new Array();
     this.graphContent.attributes.push({ name: 'name', label: 'Nombre', required: false, types: ['string'], headers: [], value: null })
     this.graphContent.attributes.push({ name: 'value', label: 'Valor',  required: true, types: ['number'], headers: [], value: null })
